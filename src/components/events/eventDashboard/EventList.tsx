@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { EventListItem } from './EventListItem';
-import { EventData } from './EventDashboard';
+import { EventData } from '../../App';
 
 interface EventListProps {
   events: EventData[];

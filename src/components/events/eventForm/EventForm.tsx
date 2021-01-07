@@ -1,11 +1,9 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Form, Header, Segment } from 'semantic-ui-react';
-interface EventFormProps {
-  setFormOpen: (state: boolean) => void;
-}
 
-const EventForm = ({ setFormOpen }: EventFormProps) => {
-  const removeForm = () => setFormOpen(false);
+const EventForm = () => {
+  const history = useHistory();
 
   return (
     <Segment clearing>
@@ -27,7 +25,12 @@ const EventForm = ({ setFormOpen }: EventFormProps) => {
           <input type='date' placeholder='Fecha' />
         </Form.Field>
         <Button type='submit' floated='right' positive content='Submit' />
-        <Button type='submit' floated='left' content='Cancelar' onClick={removeForm} />
+        <Button
+          onClick={() => history.goBack()}
+          type='submit'
+          floated='left'
+          content='Cancelar'
+        />
       </Form>
     </Segment>
   );

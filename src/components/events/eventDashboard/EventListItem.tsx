@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Icon, Item, List, Segment } from 'semantic-ui-react';
 import { EventListAttendee } from './EventListAttendee';
-import { EventData, EventAttendee } from './EventDashboard';
+import { EventData, EventAttendee } from '../../App';
+import { Link } from 'react-router-dom';
 
 interface EventListItemProps {
   event: EventData;
@@ -45,8 +46,15 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
       </Segment>
 
       <Segment clearing>
-        <div>{event.description}</div>
-        <Button color='teal' floated='right' content='Ver' />
+        <div style={{ marginBottom: '10px' }}>{event.description}</div>
+        <Button
+          as={Link}
+          to={`/events/${event.id}`}
+          color='teal'
+          floated='right'
+          content='Ver'
+        />
+        <Button color='red' floated='right' content='Borrar' />
       </Segment>
     </Segment.Group>
   );
