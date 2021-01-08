@@ -1,13 +1,30 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { ChangeEvent } from 'react';
+import { useDispatch } from 'react-redux';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { Button, Form, Header, Segment } from 'semantic-ui-react';
+import { useEventData } from '../../hooks/useEvent';
+import { createEvent, updateEvent } from '../../../actions/event';
+export interface MatchParams {
+  id: string;
+}
 
-const EventForm = () => {
+interface Props extends RouteComponentProps<MatchParams> {}
+
+const EventForm = ({ match }: Props) => {
   const history = useHistory();
+  const eventId = match.params.id;
+  const selectedEvent = useEventData(eventId);
+
+  const dispatch = useDispatch();
+
+  // const handleFormSubmit = (e: ChangeEvent<HTMLInputElement>): void => {
+  //   selectedEvent ? dispatch(updateEvent()) : dispatch(createEvent());
+  //   history.push('/events');
+  // };
 
   return (
     <Segment clearing>
-      <Header content='Crear nuevo evento' />
+      <Header content={selectedEvent ? 'Modificar evento' : 'Crear nuevo evento'} />
       <Form>
         <Form.Field>
           <input type='text' placeholder='Nombre de Evento' />
