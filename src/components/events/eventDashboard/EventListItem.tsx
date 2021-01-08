@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Button, Icon, Item, List, Segment } from 'semantic-ui-react';
 import { EventListAttendee } from './EventListAttendee';
-import { EventData, EventAttendee } from '../../App';
+import { EventData, EventAttendee, deleteEvent } from '../../../actions/event';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 interface EventListItemProps {
   event: EventData;
 }
 
 const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
-  const renderAttendees = event.attendees.map(
-    (attendee: EventAttendee): JSX.Element => {
-      return <EventListAttendee key={attendee.id} attendee={attendee} />;
-    }
+  const dispatch = useDispatch();
+
+  const renderAttendees = event.attendees ? (
+    event.attendees!.map(
+      (attendee: EventAttendee): JSX.Element => {
+        return <EventListAttendee key={attendee.id} attendee={attendee} />;
+      }
+    )
+  ) : (
+    <List.Item>No hay participantes</List.Item>
   );
 
   return (
@@ -54,7 +61,12 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
           floated='right'
           content='Ver'
         />
-        <Button color='red' floated='right' content='Borrar' />
+        <Button
+          onClick={() => dispatch(deleteEvent(event.id))}
+          color='red'
+          floated='right'
+          content='Borrar'
+        />
       </Segment>
     </Segment.Group>
   );
