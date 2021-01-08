@@ -1,21 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Header, Image, Item, Segment } from 'semantic-ui-react';
+import { EventData } from '../../actions/event';
 
-const EventDetailHeader = () => {
+interface Props {
+  event: EventData | undefined;
+}
+
+const EventDetailHeader = ({ event }: Props) => {
   return (
     <Segment.Group>
       <Segment basic attached='top' style={{ padding: '0' }}>
-        <Image src={`/assets/categoryImages/drinks.jpg`} fluid style={eventImageStyle} />
+        <Image
+          src={`/assets/categoryImages/${event?.category}.jpg`}
+          fluid
+          style={eventImageStyle}
+        />
 
         <Segment basic style={eventImageTextStyle}>
           <Item.Group>
             <Item>
               <Item.Content>
-                <Header size='huge' content='titulo evento' style={{ color: 'white' }} />
-                <p>fecha evento</p>
+                <Header size='huge' content={event?.title} style={{ color: 'white' }} />
+                <p>{event?.date}</p>
                 <p>
-                  Hosteado por: <strong>usuario</strong>
+                  Hosteado por: <strong>{event?.hostedBy}</strong>
                 </p>
               </Item.Content>
             </Item>
@@ -27,7 +36,7 @@ const EventDetailHeader = () => {
         <Button>Cancelar Reservacion</Button>
         <Button color='teal'>Unirme a Evento</Button>
 
-        <Button as={Link} to={`/manage/event.id`} color='orange' floated='right'>
+        <Button as={Link} to={`/manage/${event?.id}`} color='orange' floated='right'>
           Manejar Evento
         </Button>
       </Segment>
