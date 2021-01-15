@@ -1,7 +1,9 @@
+import { format } from 'date-fns';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Header, Image, Item, Segment } from 'semantic-ui-react';
 import { EventData } from '../../actions/event';
+import { TIME_VALUE } from '../../actions/types';
 
 interface Props {
   event: EventData | undefined;
@@ -22,7 +24,7 @@ const EventDetailHeader = ({ event }: Props) => {
             <Item>
               <Item.Content>
                 <Header size='huge' content={event?.title} style={{ color: 'white' }} />
-                <p>{event?.date}</p>
+                <p>{format(event?.date!, TIME_VALUE)}</p>
                 <p>
                   Hosteado por: <strong>{event?.hostedBy}</strong>
                 </p>

@@ -2,7 +2,7 @@ export const sampleData = [
   {
     id: '1',
     title: 'Trip to Empire State building',
-    date: '2018-03-21',
+    date: new Date('2018-03-21'),
     category: 'culture',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -31,7 +31,7 @@ export const sampleData = [
   {
     id: '2',
     title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-18',
+    date: new Date('2018-03-18'),
     category: 'drinks',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -52,4 +52,13 @@ export const sampleData = [
       },
     ],
   },
+];
+
+export const categoryData = [
+  { key: 'drinks', text: 'Drinks', value: 'drinks' },
+  { key: 'culture', text: 'Culture', value: 'culture' },
+  { key: 'film', text: 'Film', value: 'film' },
+  { key: 'food', text: 'Food', value: 'food' },
+  { key: 'music', text: 'Music', value: 'music' },
+  { key: 'travel', text: 'Travel', value: 'travel' },
 ];

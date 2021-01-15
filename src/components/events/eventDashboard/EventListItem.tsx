@@ -1,9 +1,11 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { Button, Icon, Item, List, Segment } from 'semantic-ui-react';
 import { EventListAttendee } from './EventListAttendee';
 import { EventData, EventAttendee, deleteEvent } from '../../../actions/event';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { format } from 'date-fns';
+import { TIME_VALUE } from '../../../actions/types';
 
 interface EventListItemProps {
   event: EventData;
@@ -43,7 +45,7 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
 
       <Segment>
         <span>
-          <Icon name='clock' /> {event.date}
+          <Icon name='clock' /> {format(event?.date!, TIME_VALUE)}
           <Icon name='point' /> {event.venue}
         </span>
       </Segment>
@@ -62,7 +64,7 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
           content='Ver'
         />
         <Button
-          onClick={() => dispatch(deleteEvent(event.id))}
+          onClick={() => dispatch(deleteEvent(event.id!))}
           color='red'
           floated='right'
           content='Borrar'

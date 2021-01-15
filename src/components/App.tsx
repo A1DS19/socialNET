@@ -7,12 +7,14 @@ import { Navbar } from './nav/Navbar';
 import { HomePage } from './home/HomePage';
 import { EventDetail } from './events-detail/EventDetail';
 import { EventForm } from './events/eventForm/EventForm';
+import { ModalManager } from './common/modals/ModalManager';
 
 const App = () => {
   const { key } = useLocation();
 
   return (
     <Fragment>
+      <ModalManager />
       <Route exact path='/' component={HomePage} />
       <Route
         path={'/(.+)'}
