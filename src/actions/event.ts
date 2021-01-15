@@ -2,14 +2,14 @@ import { Dispatch } from 'redux';
 import { types } from './types';
 
 export interface EventData {
-  id: string;
+  id?: string;
   title: string;
-  date: string;
+  date: Date;
   category: string;
   description: string;
   city: string;
   venue: string;
-  hostedBy: string;
+  hostedBy?: string;
   hostPhotoURL?: string;
   attendees?: EventAttendee[];
 }
