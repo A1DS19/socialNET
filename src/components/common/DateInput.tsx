@@ -17,6 +17,7 @@ const DateInput = (props: any): JSX.Element => {
         {...props}
         selected={(field.value && new Date(field.value)) || null}
         onChange={(value) => setFieldValue(field.name, value)}
+        placeholderText={props.placeholder}
       />
       {meta.touched && meta.error ? (
         <Label basic color='red'>

@@ -46,7 +46,7 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
       <Segment>
         <span>
           <Icon name='clock' /> {format(event?.date!, TIME_VALUE)}
-          <Icon name='point' /> {event.venue}
+          <Icon name='point' /> {event.venue.address}
         </span>
       </Segment>
 

@@ -7,11 +7,21 @@ export interface EventData {
   date: Date;
   category: string;
   description: string;
-  city: string;
-  venue: string;
+  venue: Venue_City;
+  city: Venue_City;
   hostedBy?: string;
   hostPhotoURL?: string;
   attendees?: EventAttendee[];
+}
+
+export interface Coords {
+  lat: number;
+  lng: number;
+}
+
+export interface Venue_City {
+  address: string;
+  latLng: google.maps.LatLngLiteral | null;
 }
 
 export interface EventAttendee {

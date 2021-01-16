@@ -25,7 +25,7 @@ const Navbar = (): JSX.Element => {
           socialNET
         </Menu.Item>
         <Menu.Item as={NavLink} to='/events' name='Events' />
-        {auth && (
+        {auth.authenticated && (
           <Menu.Item as={NavLink} to='/createEvent'>
             <Button positive inverted content='Crear Evento' />
           </Menu.Item>

@@ -41,7 +41,9 @@ const EventDetailSidebar = ({ event }: Props) => {
         color='teal'
       >
         {event?.attendees?.length}{' '}
-        {event!.attendees!.length > 1 ? 'Personas van' : 'Persona va'}
+        {event!.attendees!.length > 1
+          ? 'Personas van'
+          : event!.attendees!.length <= 1 && 'Persona van'}
       </Segment>
 
       <Segment attached>

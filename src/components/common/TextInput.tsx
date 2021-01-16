@@ -2,7 +2,7 @@ import React, { EventHandler } from 'react';
 import { FieldInputProps, useField } from 'formik';
 import { FormField, Label } from 'semantic-ui-react';
 
-export interface TextInputProps extends FieldInputProps<''> {
+export interface TextInputProps extends FieldInputProps<any> {
   label?: string;
   placeholder?: string;
   value: any;
@@ -17,10 +17,8 @@ const TextInput = (props: TextInputProps): JSX.Element => {
   return (
     // '!!' para convertir meta.error en un boolean
     <FormField error={meta.touched && !!meta.error}>
-      <label>
-        {props.label}
-        <input {...field} {...props} type={props.type} />
-      </label>
+      <label>{props.label}</label>
+      <input {...field} {...props} type={props.type} />
       {meta.touched && meta.error ? (
         <Label basic color='red'>
           {meta.error}

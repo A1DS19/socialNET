@@ -4,8 +4,8 @@ export const eventValidationSchema = Yup.object({
   title: Yup.string().required('El titulo es requerido'),
   category: Yup.string().required('La categoria es requerida'),
   description: Yup.string().required('La descripccion es requerida'),
-  city: Yup.string().required('La ciudad es requerida'),
-  venue: Yup.string().required('El lugar del evento es requerido'),
+  city: Yup.object().shape({ address: Yup.string().required('La ciudad es requerida') }),
+  venue: Yup.object().shape({ address: Yup.string().required('El lugar es requerido') }),
   date: Yup.string().required('La fecha es requerida'),
 });
 

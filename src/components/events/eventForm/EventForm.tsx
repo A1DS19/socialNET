@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { Button, Header, Segment } from 'semantic-ui-react';
 import { useEventData } from '../../hooks/useEvent';
-import { createEvent, updateEvent } from '../../../actions/event';
+import { createEvent, updateEvent, EventData } from '../../../actions/event';
 import { Formik, FormikHelpers, Form, FormikProps } from 'formik';
 import { eventValidationSchema } from '../../common/validationSchemas';
 import { TextInput } from '../../common/TextInput';
 import { TextArea } from '../../common/TextArea';
+import { LocationInput } from '../../common/LocationInput';
 import { SelectInput } from '../../common/SelectInput';
 import { DateInput } from '../../common/DateInput';
 import { categoryData } from '../../../api/sampleData';
@@ -17,16 +18,6 @@ import { v4 as uuidv4 } from 'uuid';
 export interface MatchParams {
   id: string;
 }
-
-export interface EventFormValues {
-  title: string;
-  date: Date;
-  category: string;
-  description: string;
-  venue: string;
-  city: string;
-}
-
 interface Props extends RouteComponentProps<MatchParams> {}
 
 const EventForm = ({ match }: Props) => {
@@ -35,7 +26,7 @@ const EventForm = ({ match }: Props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const initialValues: EventFormValues = {
+  const initialValues: EventData = {
     title: selectedEvent?.title!,
     date: selectedEvent?.date!,
     category: selectedEvent?.category!,
@@ -45,8 +36,8 @@ const EventForm = ({ match }: Props) => {
   };
 
   const handleFormSubmit = (
-    values: EventFormValues,
-    helpers: FormikHelpers<EventFormValues>
+    values: EventData,
+    helpers: FormikHelpers<EventData>
   ): void => {
     selectedEvent
       ? dispatch(updateEvent({ ...selectedEvent, ...values }))
@@ -69,76 +60,97 @@ const EventForm = ({ match }: Props) => {
       <Header content={selectedEvent ? 'Modificar evento' : 'Crear evento'} />
       <Formik
         initialValues={initialValues}
-        onSubmit={(values: EventFormValues, helpers: FormikHelpers<EventFormValues>) => {
+        onSubmit={(values: EventData, helpers: FormikHelpers<EventData>) => {
           handleFormSubmit(values, helpers);
         }}
         validationSchema={eventValidationSchema}
       >
-        {(props: FormikProps<EventFormValues>) => (
-          <Form className='ui form'>
-            <TextInput
-              name='title'
-              placeholder='Titulo de evento'
-              value={props.values.title}
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <SelectInput
-              name='category'
-              placeholder='Categoria'
-              options={categoryData}
-              value={props.values.category}
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <TextArea
-              name='description'
-              placeholder='Descripccion'
-              rows={3}
-              value={props.values.description}
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <TextInput
-              name='city'
-              placeholder='Ciudad'
-              value={props.values.city}
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <TextInput
-              name='venue'
-              placeholder='Lugar'
-              value={props.values.venue}
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <DateInput
-              name='date'
-              placeholder='Fecha'
-              timeFormat='HH:mm'
-              showTimeSelect
-              timeCaption='time'
-              dateFormat='MMMM d, yyyy h:mm a'
-            />
+        {(props: FormikProps<EventData>) => {
+          const handleUndefined = () => {
+            if (typeof props.values.city.latLng === 'undefined') {
+              return { lat: 0, lng: 0 };
+            } else {
+              return props.values.city.latLng;
+            }
+          };
+          return (
+            <Form className='ui form'>
+              <TextInput
+                name='title'
+                placeholder='Titulo de evento'
+                value={props.values.title}
+                onChange={props.handleChange}
+                onBlur={props.handleBlur}
+              />
+              <SelectInput
+                name='category'
+                placeholder='Categoria'
+                options={categoryData}
+                value={props.values.category}
+                onChange={props.handleChange}
+                onBlur={props.handleBlur}
+              />
+              <TextArea
+                name='description'
+                placeholder='Descripccion'
+                rows={3}
+                value={props.values.description}
+                onChange={props.handleChange}
+                onBlur={props.handleBlur}
+              />
 
-            <Button
-              loading={props.isSubmitting}
-              disabled={!props.isValid || !props.dirty || props.isSubmitting}
-              type='submit'
-              floated='right'
-              positive
-              content='Submit'
-            />
+              <LocationInput
+                name='city'
+                placeholder='Ciudad'
+                value={props.values.city}
+                onChange={props.handleChange}
+                onBlur={props.handleBlur}
+              />
 
-            <Button
-              disabled={props.isSubmitting}
-              onClick={() => history.goBack()}
-              floated='left'
-              content='Cancelar'
-            />
-          </Form>
-        )}
+              <LocationInput
+                name='venue'
+                placeholder='Lugar'
+                value={props.values.venue}
+                disabled={props.values.city ? !props.values.city?.latLng : true}
+                options={{
+                  location: new google.maps.LatLng(
+                    props.values.city &&
+                      (props.values.city!.latLng as google.maps.LatLngLiteral)
+                  ),
+                  radius: 1000,
+                  type: ['establishment'],
+                }}
+                onChange={props.handleChange}
+                onBlur={props.handleBlur}
+              />
+
+              <DateInput
+                name='date'
+                placeholder='Fecha'
+                timeFormat='HH:mm'
+                showTimeSelect
+                timeCaption='time'
+                dateFormat='MMMM d, yyyy h:mm a'
+              />
+
+              <Button
+                loading={props.isSubmitting}
+                disabled={!props.isValid || !props.dirty || props.isSubmitting}
+                type='submit'
+                floated='right'
+                positive
+                content='Submit'
+              />
+
+              <Button
+                disabled={props.isSubmitting}
+                onClick={() => history.goBack()}
+                floated='left'
+                content='Cancelar'
+              />
+            </Form>
+          );
+        }}
       </Formik>
     </Segment>
   );

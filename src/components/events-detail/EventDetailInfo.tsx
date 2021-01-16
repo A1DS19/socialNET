@@ -1,13 +1,16 @@
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
-import { EventData } from '../../actions/event';
+import { Coords, EventData } from '../../actions/event';
 import { TIME_VALUE } from '../../actions/types';
+import { EventDetailMap } from './EventDetailMap';
 interface Props {
   event: EventData | undefined;
 }
 
 const EventDetailInfo = ({ event }: Props) => {
+  const [show_hide_map, setMapState] = useState(false);
+
   return (
     <Segment.Group>
       <Segment attached='top'>
@@ -36,13 +39,26 @@ const EventDetailInfo = ({ event }: Props) => {
             <Icon name='marker' size='large' color='teal' />
           </Grid.Column>
           <Grid.Column width={11}>
-            <span>{event?.venue}</span>
+            <span>{event?.venue.address}</span>
           </Grid.Column>
           <Grid.Column width={4}>
-            <Button color='teal' size='tiny' content='Show Map' />
+            <Button
+              color='teal'
+              size='tiny'
+              content={show_hide_map ? 'Cerrar Mapa' : 'Ver Mapa'}
+              onClick={() => setMapState(!show_hide_map)}
+            />
           </Grid.Column>
         </Grid>
       </Segment>
+      {show_hide_map && (
+        <EventDetailMap
+          center={event?.venue.latLng as Coords}
+          zoom={14}
+          width={'100%'}
+          heigth={300}
+        />
+      )}
     </Segment.Group>
   );
 };
