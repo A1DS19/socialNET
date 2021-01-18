@@ -8,6 +8,7 @@ import { HomePage } from './home/HomePage';
 import { EventDetail } from './events-detail/EventDetail';
 import { EventForm } from './events/eventForm/EventForm';
 import { ModalManager } from './common/modals/ModalManager';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   const { key } = useLocation();
@@ -15,6 +16,12 @@ const App = () => {
   return (
     <Fragment>
       <ModalManager />
+      <ToastContainer
+        position='bottom-right'
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+      />
       <Route exact path='/' component={HomePage} />
       <Route
         path={'/(.+)'}

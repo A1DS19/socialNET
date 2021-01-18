@@ -60,19 +60,12 @@ const EventForm = ({ match }: Props) => {
       <Header content={selectedEvent ? 'Modificar evento' : 'Crear evento'} />
       <Formik
         initialValues={initialValues}
+        validationSchema={eventValidationSchema}
         onSubmit={(values: EventData, helpers: FormikHelpers<EventData>) => {
           handleFormSubmit(values, helpers);
         }}
-        validationSchema={eventValidationSchema}
       >
         {(props: FormikProps<EventData>) => {
-          const handleUndefined = () => {
-            if (typeof props.values.city.latLng === 'undefined') {
-              return { lat: 0, lng: 0 };
-            } else {
-              return props.values.city.latLng;
-            }
-          };
           return (
             <Form className='ui form'>
               <TextInput

@@ -1,6 +1,7 @@
+import { sampleData } from './../api/sampleData';
 import { Dispatch } from 'redux';
 import { types } from './types';
-
+import { asyncActionError, asyncActionStart, asyncActionFinish } from './loading';
 export interface EventData {
   id?: string;
   title: string;
@@ -44,6 +45,21 @@ export interface DeleteEventAction {
   type: types.DELETE_EVENT;
   payload: string;
 }
+
+export interface FetchEventAction {
+  type: types.FETCH_EVENTS;
+  payload?: EventData[];
+}
+
+export const fetchEvents = () => {
+  return async (dispatch: Dispatch) => {
+    const data = sampleData;
+
+    dispatch(asyncActionStart());
+    dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: data });
+    dispatch(asyncActionFinish());
+  };
+};
 
 export const createEvent = (event: EventData) => {
   return async (dispatch: Dispatch) => {

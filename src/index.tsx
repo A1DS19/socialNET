@@ -1,4 +1,6 @@
 import 'semantic-ui-css/semantic.min.css';
+import 'react-toastify/dist/ReactToastify.min.css';
+import 'react-calendar/dist/Calendar.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { applyMiddleware, createStore } from 'redux';
@@ -9,9 +11,12 @@ import thunk from 'redux-thunk';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ScrollToTop } from './scripts/scrollToTop';
 import { App } from './components/App';
+import { fetchEvents } from './actions/event';
 
 const composeEnhancers = composeWithDevTools({});
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
+
+store.dispatch(fetchEvents() as any);
 
 ReactDOM.render(
   <Provider store={store}>

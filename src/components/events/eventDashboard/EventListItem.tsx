@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { format } from 'date-fns';
 import { TIME_VALUE } from '../../../actions/types';
+import { toast } from 'react-toastify';
 
 interface EventListItemProps {
   event: EventData;

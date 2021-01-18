@@ -43,7 +43,9 @@ const EventDetailSidebar = ({ event }: Props) => {
         {event?.attendees?.length}{' '}
         {event!.attendees!.length > 1
           ? 'Personas van'
-          : event!.attendees!.length <= 1 && 'Persona van'}
+          : event!.attendees!.length === 1
+          ? 'Persona van'
+          : event!.attendees!.length === 0 && 'Personas van'}
       </Segment>
 
       <Segment attached>

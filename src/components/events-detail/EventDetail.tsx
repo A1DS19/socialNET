@@ -15,7 +15,6 @@ interface Props extends RouteComponentProps<MatchParams> {}
 
 const EventDetail = ({ match }: Props) => {
   const eventId = match.params.id;
-
   const event = useEventData(eventId);
 
   return (

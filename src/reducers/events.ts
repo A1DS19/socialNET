@@ -1,23 +1,36 @@
+import { EventData } from './../actions/event';
 import { types, EventAction } from '../actions/types';
-import { EventData } from '../actions/event';
 
-//test data
-import { sampleData } from '../api/sampleData';
+export interface EventsState {
+  events: EventData[] | [];
+}
 
-export const eventsReducer = (state: EventData[] = sampleData, action: EventAction) => {
+const initialState: EventsState = {
+  events: [],
+};
+
+export const eventsReducer = (state: any = initialState, action: EventAction) => {
   switch (action.type) {
     case types.CREATE_EVENT:
-      return state.concat(action.payload);
+      return { ...state, events: [...state.events, action.payload] };
+
+    case types.FETCH_EVENTS:
+      return { ...state, events: action.payload };
 
     case types.UPDATE_EVENT:
-      return state.map((event: EventData) => {
-        if (event.id !== action.payload.id) {
-          return event;
-        } else return { ...event, ...action.payload };
-      });
+      return {
+        ...state,
+        events: [
+          ...state.events.filter((event: EventData) => event.id !== action.payload.id),
+          action.payload,
+        ],
+      };
 
     case types.DELETE_EVENT:
-      return state.filter((event: EventData) => event.id !== action.payload);
+      return {
+        ...state,
+        events: state.events.filter((event: EventData) => event.id !== action.payload),
+      };
 
     default:
       return state;
