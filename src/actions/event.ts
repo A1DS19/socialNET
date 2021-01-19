@@ -1,7 +1,7 @@
 import { sampleData } from './../api/sampleData';
 import { Dispatch } from 'redux';
 import { types } from './types';
-import { asyncActionError, asyncActionStart, asyncActionFinish } from './loading';
+import { asyncActionStart, asyncActionFinish } from './loading';
 export interface EventData {
   id?: string;
   title: string;
@@ -10,6 +10,7 @@ export interface EventData {
   description: string;
   venue: Venue_City;
   city: Venue_City;
+  isCancelled?: boolean;
   hostedBy?: string;
   hostPhotoURL?: string;
   attendees?: EventAttendee[];
@@ -50,6 +51,12 @@ export interface FetchEventAction {
   type: types.FETCH_EVENTS;
   payload?: EventData[];
 }
+
+export const listenEventsFS = (events: EventData[]) => {
+  return async (dispatch: Dispatch) => {
+    dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: events });
+  };
+};
 
 export const fetchEvents = () => {
   return async (dispatch: Dispatch) => {

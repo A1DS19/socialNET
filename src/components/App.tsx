@@ -9,6 +9,7 @@ import { EventDetail } from './events-detail/EventDetail';
 import { EventForm } from './events/eventForm/EventForm';
 import { ModalManager } from './common/modals/ModalManager';
 import { ToastContainer } from 'react-toastify';
+import { ErrorComponent } from './common/ErrorComponent';
 
 const App = () => {
   const { key } = useLocation();
@@ -37,6 +38,7 @@ const App = () => {
                 component={EventForm}
                 key={key}
               />
+              <Route path='/error' component={ErrorComponent} />
             </Container>
           </Fragment>
         )}
