@@ -13,7 +13,6 @@ const ModalWrapper: React.FC<Props> = ({ children, header, size }) => {
   return (
     <Modal open={true} onClose={() => dispatch(closeModal())} header={header} size={size}>
       {header && <Modal.Header>{header}</Modal.Header>}
-      {console.log(children)}
 
       <Modal.Content>{children}</Modal.Content>
     </Modal>

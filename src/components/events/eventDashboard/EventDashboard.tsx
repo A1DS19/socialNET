@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { Grid } from 'semantic-ui-react';
 import { EventList } from './EventList';
 import { useDispatch, useSelector } from 'react-redux';

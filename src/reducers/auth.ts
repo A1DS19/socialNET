@@ -12,19 +12,19 @@ const initialState: InitialStateProps = {
   currentUser: null,
 };
 
-export const authReducer = (
-  state: InitialStateProps = initialState,
-  action: AuthAction
-) => {
+export const authReducer = (state: any = initialState, action: AuthAction) => {
   switch (action.type) {
     case types.SIGNED_IN:
       return {
         ...state,
         authenticated: true,
         currentUser: {
-          email: action.payload.email,
-          password: action.payload.password,
-          photoURL: '/assets/user.png',
+          email: action.payload!.email,
+          displayName: action.payload?.displayName,
+          photoURL: action.payload?.photoURL,
+          uid: action.payload?.uid,
+          createdAt: action.payload?.metadata.creationTime,
+          providerId: action.payload?.providerData[0]?.providerId,
         },
       };
 

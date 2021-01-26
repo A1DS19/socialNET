@@ -64,6 +64,7 @@ export const fetchEvents = () => {
 
     dispatch(asyncActionStart());
     dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: data });
+    dispatch({ type: types.APP_LOADED });
     dispatch(asyncActionFinish());
   };
 };

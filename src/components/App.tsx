@@ -10,6 +10,8 @@ import { EventForm } from './events/eventForm/EventForm';
 import { ModalManager } from './common/modals/ModalManager';
 import { ToastContainer } from 'react-toastify';
 import { ErrorComponent } from './common/ErrorComponent';
+import { AccountPage } from '../components/auth/AccountPage';
+import { ProfilePage } from './profiles/ProfilePage';
 
 const App = () => {
   const { key } = useLocation();
@@ -38,6 +40,8 @@ const App = () => {
                 component={EventForm}
                 key={key}
               />
+              <Route path='/account' component={AccountPage} />
+              <Route path='/profile/:id' component={ProfilePage} />
               <Route path='/error' component={ErrorComponent} />
             </Container>
           </Fragment>

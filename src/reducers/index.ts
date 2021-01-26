@@ -1,3 +1,4 @@
+import { profileReducer, ProfileStateProps } from './profile';
 import { LoadingState } from './../actions/loading';
 import { InitialStateProps, authReducer } from './auth';
 import { modalsReducer } from './modals';
@@ -12,6 +13,7 @@ export interface StoreState {
   modals: ModalPayload | null;
   auth: InitialStateProps;
   loading: LoadingState;
+  profile: ProfileStateProps;
 }
 
 export const reducers = combineReducers<StoreState>({
@@ -19,4 +21,5 @@ export const reducers = combineReducers<StoreState>({
   modals: modalsReducer,
   auth: authReducer,
   loading: loadingReducer,
+  profile: profileReducer,
 });

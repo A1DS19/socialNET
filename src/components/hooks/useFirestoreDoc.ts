@@ -14,10 +14,16 @@ interface Props {
   shouldExecute?: boolean;
 }
 
-export function useFirestoreDoc({ query, data, dependencies, shouldExecute }: Props) {
+export function useFirestoreDoc({
+  query,
+  data,
+  dependencies,
+  shouldExecute = true,
+}: Props) {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!shouldExecute) return;
+
     dispatch(asyncActionStart());
     const unsubcribe = query().onSnapshot(
       (snapshot: any) => {
@@ -25,6 +31,7 @@ export function useFirestoreDoc({ query, data, dependencies, shouldExecute }: Pr
           dispatch(asyncActionError('No se encuentra el documento'));
           return;
         }
+
         data(dataFromSnapshot(snapshot));
         dispatch(asyncActionFinish());
       },

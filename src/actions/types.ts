@@ -6,24 +6,37 @@ import {
   FetchEventAction,
 } from './event';
 import { SignInAction, SignOutAction } from './auth';
-import { AsyncActionStart, AsyncActionError, AsyncActionFinish } from './loading';
+import {
+  AsyncActionStart,
+  AsyncActionError,
+  AsyncActionFinish,
+  AppLoaded,
+} from './loading';
+import { ListenCurrentProfileAction, ListenSelectedProfileAction } from './profile';
 
 export const TIME_VALUE = 'MMMM d, yyyy h:mm a';
 
 export enum types {
+  //Events
   FETCH_EVENTS,
   CREATE_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT,
+  //Modals
   OPEN_MODAL,
   CLOSE_MODAL,
+  //Auth
   SIGNED_IN,
   SIGNED_OUT,
-  //Loading state
+  //Loading
   ASYNC_ACTION_START,
   ASYNC_ACTION_FINISH,
   ASYNC_ACTION_ERROR,
-  //Loading state fin
+  //App Loaded
+  APP_LOADED,
+  //User Profile
+  LISTEN_CURRENT_PROFILE_DATA,
+  LISTEN_SELECTED_PROFILE_DATA,
 }
 
 export type EventAction =
@@ -33,4 +46,10 @@ export type EventAction =
   | FetchEventAction;
 export type ModalAction = OpenModalAction | CloseModalAction;
 export type AuthAction = SignInAction | SignOutAction;
-export type LoadingAction = AsyncActionError | AsyncActionFinish | AsyncActionStart;
+export type LoadingAction =
+  | AsyncActionError
+  | AsyncActionFinish
+  | AsyncActionStart
+  | AppLoaded;
+
+export type ProfileAction = ListenCurrentProfileAction | ListenSelectedProfileAction;

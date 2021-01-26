@@ -4,6 +4,7 @@ import { LoadingState } from '../actions/loading';
 const initialState: LoadingState = {
   loading: false,
   error: null,
+  initialized: false,
 };
 
 export const loadingReducer = (
@@ -12,13 +13,16 @@ export const loadingReducer = (
 ) => {
   switch (action.type) {
     case types.ASYNC_ACTION_START:
-      return { ...state, loading: true, error: null };
+      return { ...state, loading: true };
 
     case types.ASYNC_ACTION_ERROR:
       return { ...state, loading: false, error: action.payload };
 
     case types.ASYNC_ACTION_FINISH:
-      return { ...state, loading: false, error: null };
+      return { ...state, loading: false };
+
+    case types.APP_LOADED:
+      return { ...state, initialized: true };
 
     default:
       return state;

@@ -79,7 +79,6 @@ const EventForm = ({ match }: Props) => {
     helpers: FormikHelpers<EventData>
   ) => {
     try {
-      helpers.setSubmitting(true);
       selectedEvent
         ? await updateEventFirestore(values)
         : await addEventToFirestore(values);
@@ -173,7 +172,7 @@ const EventForm = ({ match }: Props) => {
               />
               <Button
                 disabled={props.isSubmitting}
-                onClick={() => history.goBack()}
+                onClick={() => history.push(`/events/${eventId}`)}
                 floated='right'
                 content='Volver'
               />
@@ -183,8 +182,7 @@ const EventForm = ({ match }: Props) => {
                   loading={loadingCancel}
                   type='button'
                   floated='left'
-                  positive
-                  color={selectedEvent?.isCancelled ? 'green' : 'red'}
+                  color={selectedEvent.isCancelled ? 'green' : 'red'}
                   content={
                     selectedEvent?.isCancelled ? 'Activar Evento' : 'Cancelar Evento'
                   }

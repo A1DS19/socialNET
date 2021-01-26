@@ -1,3 +1,4 @@
+import { AuthPayload } from './../actions/auth';
 import { EventData } from '../actions/event';
 import { firebase } from '../config/firebase';
 import { v4 as uuidv4 } from 'uuid';
@@ -43,6 +44,39 @@ export const cancelEventToggle = (event: EventData | undefined) => {
   return db.collection('events').doc(event!.id).update({
     isCancelled: !event!.isCancelled,
   });
+};
+
+//create user profile
+export const setUserProfileData = (user: any) => {
+  return db
+    .collection('users')
+    .doc(user.uid)
+    .set({
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL || null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+};
+
+//get user data
+export const getUserProfileData = (userId: string | undefined) => {
+  return db.collection('users').doc(userId);
+};
+
+//update profile data
+export const updateUserProfileData = async (profile: any) => {
+  const user = firebase.auth().currentUser;
+  try {
+    if (user?.displayName !== profile.displayName) {
+      await user?.updateProfile({
+        displayName: profile.displayName,
+      });
+    }
+    return await db.collection('users').doc(user?.uid).update(profile);
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const dataFromSnapshot = (snapshot: any) => {

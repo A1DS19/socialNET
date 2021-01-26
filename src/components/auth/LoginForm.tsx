@@ -1,16 +1,18 @@
 import React from 'react';
 import { Formik, FormikHelpers, FormikProps, Form } from 'formik';
-import { Button } from 'semantic-ui-react';
+import { Button, Divider, Label } from 'semantic-ui-react';
 import { TextInput } from '../common/TextInput';
 import { loginValidationSchema } from '../common/validationSchemas';
 import { ModalWrapper } from '../common/modals/ModalWrapper';
 import { useDispatch } from 'react-redux';
 import { signInUser } from '../../actions/auth';
 import { closeModal } from '../../actions/modals';
+import { SocialLogin } from './SocialLogin';
 
 export interface LoginFormValues {
   email: string;
   password: string;
+  authError?: string;
 }
 
 const LoginForm = () => {
@@ -25,14 +27,31 @@ const LoginForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={loginValidationSchema}
-        onSubmit={(values: LoginFormValues, helpers: FormikHelpers<LoginFormValues>) => {
-          dispatch(signInUser(values));
-          helpers.setSubmitting(false);
-          dispatch(closeModal());
+        onSubmit={async (
+          values: LoginFormValues,
+          helpers: FormikHelpers<LoginFormValues>
+        ) => {
+          try {
+            helpers.setSubmitting(true);
+            await dispatch(signInUser(values));
+            helpers.setSubmitting(false);
+            dispatch(closeModal());
+          } catch (error) {
+            helpers.setErrors({ authError: error.message });
+            helpers.setSubmitting(false);
+          }
         }}
       >
         {(props: FormikProps<LoginFormValues>) => (
           <Form className='ui form'>
+            {props.errors.authError && (
+              <Label
+                basic
+                style={{ marginBottom: 10 }}
+                color='red'
+                content={props.errors.authError}
+              />
+            )}
             <TextInput
               name='email'
               label='Email'
@@ -61,6 +80,8 @@ const LoginForm = () => {
               color='teal'
               content='Login'
             />
+            <Divider horizontal>O</Divider>
+            <SocialLogin />
           </Form>
         )}
       </Formik>

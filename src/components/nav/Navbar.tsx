@@ -1,21 +1,13 @@
 import React from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Button, Container, Menu } from 'semantic-ui-react';
 import { SignedOutMenu } from './SignedOutMenu';
 import { SignedInMenu } from './SignedInMenu';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { StoreState } from '../../reducers';
-import { signOutUser } from '../../actions/auth';
 
 const Navbar = (): JSX.Element => {
-  const history = useHistory();
   const auth = useSelector((state: StoreState) => state.auth);
-  const dispatch = useDispatch();
-
-  const onSignOutPush = (): void => {
-    dispatch(signOutUser());
-    history.push('/');
-  };
 
   return (
     <Menu inverted fixed='top'>
@@ -30,11 +22,7 @@ const Navbar = (): JSX.Element => {
             <Button positive inverted content='Crear Evento' />
           </Menu.Item>
         )}
-        {auth.authenticated ? (
-          <SignedInMenu onSignOutPush={onSignOutPush} />
-        ) : (
-          <SignedOutMenu />
-        )}
+        {auth.authenticated ? <SignedInMenu /> : <SignedOutMenu />}
       </Container>
     </Menu>
   );

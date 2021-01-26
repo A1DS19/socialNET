@@ -15,7 +15,13 @@ const SignedOutMenu = (): JSX.Element => {
           content='Login'
           onClick={() => dispatch(openModal({ type: 'LoginForm' }))}
         />
-        <Button basic inverted content='Registro' style={{ marginLeft: '0.5em' }} />
+        <Button
+          basic
+          inverted
+          content='Registro'
+          style={{ marginLeft: '0.5em' }}
+          onClick={() => dispatch(openModal({ type: 'RegisterForm' }))}
+        />
       </Menu.Item>
     </Fragment>
   );

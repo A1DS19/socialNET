@@ -1,7 +1,7 @@
 import { types } from './types';
 
 export interface ModalPayload {
-  type: 'LoginForm';
+  type: 'LoginForm' | 'RegisterForm';
   props?: JSX.Element;
 }
 

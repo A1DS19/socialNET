@@ -11,9 +11,12 @@ import thunk from 'redux-thunk';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ScrollToTop } from './scripts/scrollToTop';
 import { App } from './components/App';
+import { verifyAuth } from './actions/auth';
 
 const composeEnhancers = composeWithDevTools({});
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
+//verificar auth
+store.dispatch(verifyAuth() as any);
 
 ReactDOM.render(
   <Provider store={store}>
