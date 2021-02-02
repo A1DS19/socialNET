@@ -12,7 +12,11 @@ import {
   AsyncActionFinish,
   AppLoaded,
 } from './loading';
-import { ListenCurrentProfileAction, ListenSelectedProfileAction } from './profile';
+import {
+  ListenCurrentProfileAction,
+  ListenSelectedProfileAction,
+  ListenUserPhotos,
+} from './profile';
 
 export const TIME_VALUE = 'MMMM d, yyyy h:mm a';
 
@@ -37,6 +41,7 @@ export enum types {
   //User Profile
   LISTEN_CURRENT_PROFILE_DATA,
   LISTEN_SELECTED_PROFILE_DATA,
+  LISTEN_USER_PHOTOS,
 }
 
 export type EventAction =
@@ -52,4 +57,7 @@ export type LoadingAction =
   | AsyncActionStart
   | AppLoaded;
 
-export type ProfileAction = ListenCurrentProfileAction | ListenSelectedProfileAction;
+export type ProfileAction =
+  | ListenCurrentProfileAction
+  | ListenSelectedProfileAction
+  | ListenUserPhotos;

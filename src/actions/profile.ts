@@ -10,6 +10,11 @@ export interface ListenSelectedProfileAction {
   payload: any;
 }
 
+export interface ListenUserPhotos {
+  type: types.LISTEN_USER_PHOTOS;
+  payload: any;
+}
+
 export const ListenCurrentProfile = (profile: any): ListenCurrentProfileAction => {
   return {
     type: types.LISTEN_CURRENT_PROFILE_DATA,
@@ -21,5 +26,12 @@ export const ListenSelectedProfile = (profile: any): ListenSelectedProfileAction
   return {
     type: types.LISTEN_SELECTED_PROFILE_DATA,
     payload: profile,
+  };
+};
+
+export const listenUserPhotos = (photos: any): ListenUserPhotos => {
+  return {
+    type: types.LISTEN_USER_PHOTOS,
+    payload: photos,
   };
 };

@@ -5,6 +5,20 @@ import { setUserProfileData } from './firestoreService';
 
 export type SelectedProviders = 'FacebookAuthProvider' | 'GoogleAuthProvider';
 
+export const uploadFirebaseStorage = (file: File, filename: string) => {
+  const user = firebase.auth().currentUser;
+  const storageRef = firebase.storage().ref();
+  //crear referencia con datos de usuario
+  return storageRef.child(`${user?.uid}/user_images/${filename}`).put(file);
+};
+
+export const deleteFromFirestoreStorage = (filename: string) => {
+  const userUID = firebase.auth().currentUser?.uid;
+  const storageRef = firebase.storage().ref();
+  const photoRef = storageRef.child(`${userUID}/user_images/${filename}`);
+  return photoRef.delete();
+};
+
 export const signInWithEmail = (creds: AuthPayload) => {
   return firebase.auth().signInWithEmailAndPassword(creds.email, creds.password);
 };

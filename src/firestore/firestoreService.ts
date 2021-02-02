@@ -1,9 +1,54 @@
-import { AuthPayload } from './../actions/auth';
 import { EventData } from '../actions/event';
 import { firebase } from '../config/firebase';
 import { v4 as uuidv4 } from 'uuid';
 
 const db = firebase.firestore();
+
+export const updateUserProfilePhoto = async (downloadURL: string, filename: string) => {
+  const user = firebase.auth().currentUser;
+  const userDocRef = db.collection('users').doc(user?.uid);
+  try {
+    const userDoc = await userDocRef.get();
+
+    if (!userDoc.data()?.photoURL) {
+      await db.collection('users').doc(user?.uid).update({
+        photoURL: downloadURL,
+      });
+      await user?.updateProfile({
+        photoURL: downloadURL,
+      });
+    }
+    return await db.collection('users').doc(user?.uid).collection('photos').add({
+      name: filename,
+      url: downloadURL,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserPhotos = (userUID: string) => {
+  return db.collection('users').doc(userUID).collection('photos');
+};
+
+export const setMainPhoto = async (photo: any) => {
+  const user = firebase.auth().currentUser;
+  try {
+    await db.collection('users').doc(user?.uid).update({
+      photoURL: photo.url,
+    });
+    return user?.updateProfile({
+      photoURL: photo.url,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deletePhotoFromCollection = (photoId: string) => {
+  const userUID = firebase.auth().currentUser?.uid;
+  return db.collection('users').doc(userUID).collection('photos').doc(photoId).delete();
+};
 
 //get all events
 export const listenToEventsFromFirestore = () => {

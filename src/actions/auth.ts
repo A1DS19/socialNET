@@ -7,6 +7,7 @@ import { dataFromSnapshot, getUserProfileData } from '../firestore/firestoreServ
 
 export interface AuthPayload extends Partial<firebase.auth.UserCredential> {
   uid?: any;
+  id?: any;
   email: string;
   password: string;
   displayName?: string;
