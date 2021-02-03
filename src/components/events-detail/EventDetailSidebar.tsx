@@ -1,17 +1,32 @@
 import React, { Fragment } from 'react';
-import { Item, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Item, Label, Segment } from 'semantic-ui-react';
 import { EventAttendee, EventData } from '../../actions/event';
 
 interface Props {
   event: EventData | undefined;
+  hostUid: string | undefined;
 }
 
-const EventDetailSidebar = ({ event }: Props) => {
+const EventDetailSidebar = ({ event, hostUid }: Props) => {
   const renderAttendees = event?.attendees ? (
     event.attendees.map(
       (attendee: EventAttendee): JSX.Element => {
         return (
-          <Item key={attendee.id} style={{ position: 'relative' }}>
+          <Item
+            as={Link}
+            to={`/profile/${attendee.id}`}
+            key={attendee.id}
+            style={{ position: 'relative' }}
+          >
+            {hostUid === attendee.id && (
+              <Label
+                style={{ position: 'absolute' }}
+                ribbon='right'
+                color='orange'
+                content='Host'
+              />
+            )}
             <Item.Image size='tiny' src={attendee.photoURL} />
             <Item.Content verticalAlign='middle'>
               <Item.Header as='h3'>

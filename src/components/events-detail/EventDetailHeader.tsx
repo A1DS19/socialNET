@@ -1,15 +1,46 @@
 import { format } from 'date-fns';
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Button, Header, Image, Item, Segment } from 'semantic-ui-react';
 import { EventData } from '../../actions/event';
 import { TIME_VALUE } from '../../actions/types';
+import {
+  addUserAttendance,
+  cancelUserAttendance,
+} from '../../firestore/firestoreService';
 
 interface Props {
   event: EventData | undefined;
+  isHost: boolean;
+  isGoing: boolean | undefined;
 }
 
-const EventDetailHeader = ({ event }: Props) => {
+const EventDetailHeader = ({ event, isHost, isGoing }: Props) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleUserJoin = async () => {
+    setLoading(true);
+    try {
+      await addUserAttendance(event);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUserCancel = async () => {
+    setLoading(true);
+    try {
+      await cancelUserAttendance(event);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Segment.Group>
       <Segment basic attached='top' style={{ padding: '0' }}>
@@ -26,7 +57,13 @@ const EventDetailHeader = ({ event }: Props) => {
                 <Header size='huge' content={event?.title} style={{ color: 'white' }} />
                 <p>{format(event?.date!, TIME_VALUE)}</p>
                 <p>
-                  Hosteado por: <strong>{event?.hostedBy}</strong>
+                  Hosteado por:{' '}
+                  <strong>
+                    {' '}
+                    <Link style={{ color: '#f2711c' }} to={`/profile/${event?.hostUid}`}>
+                      {event?.hostedBy}
+                    </Link>{' '}
+                  </strong>
                 </p>
               </Item.Content>
             </Item>
@@ -34,13 +71,26 @@ const EventDetailHeader = ({ event }: Props) => {
         </Segment>
       </Segment>
 
-      <Segment attached='bottom'>
-        <Button>Cancelar Reservacion</Button>
-        <Button color='teal'>Unirme a Evento</Button>
+      <Segment attached='bottom' clearing>
+        {!isHost && (
+          <Fragment>
+            {isGoing ? (
+              <Button loading={loading} onClick={handleUserCancel}>
+                Cancelar Reservacion
+              </Button>
+            ) : (
+              <Button loading={loading} color='teal' onClick={handleUserJoin}>
+                Unirme a Evento
+              </Button>
+            )}
+          </Fragment>
+        )}
 
-        <Button as={Link} to={`/manage/${event?.id}`} color='orange' floated='right'>
-          Manejar Evento
-        </Button>
+        {isHost && (
+          <Button as={Link} to={`/manage/${event?.id}`} color='orange' floated='right'>
+            Manejar Evento
+          </Button>
+        )}
       </Segment>
     </Segment.Group>
   );

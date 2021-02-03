@@ -35,6 +35,8 @@ export const asyncActionFinish = (): AsyncActionFinish => {
   };
 };
 export const asyncActionError = (error: string): AsyncActionError => {
+  console.log(error);
+
   return {
     type: types.ASYNC_ACTION_ERROR,
     payload: error,

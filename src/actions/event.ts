@@ -4,6 +4,7 @@ import { types } from './types';
 import { asyncActionStart, asyncActionFinish } from './loading';
 export interface EventData {
   id?: string;
+  hostUid?: string;
   title: string;
   date: Date;
   category: string;

@@ -3,6 +3,7 @@ import { Tab } from 'semantic-ui-react';
 import { UserDataProps } from './ProfilePage';
 import { AboutTab } from './AboutTab';
 import { PhotosTab } from './PhotosTab';
+import { EventsTab } from './EventsTab';
 export interface IsCurrentUserProps {
   isCurrentUser: boolean;
 }
@@ -20,7 +21,10 @@ export const ProfileContent = ({
       menuItem: 'Fotos',
       render: () => <PhotosTab user={user} isCurrentUser={isCurrentUser} />,
     },
-    { menuItem: 'Eventos', render: () => <Tab.Pane>Eventos </Tab.Pane> },
+    {
+      menuItem: 'Eventos',
+      render: () => <EventsTab user={user} isCurrentUser={isCurrentUser} />,
+    },
     { menuItem: 'Seguidores', render: () => <Tab.Pane>Seguidores </Tab.Pane> },
     { menuItem: 'Siguiendo', render: () => <Tab.Pane>Siguiendo </Tab.Pane> },
   ];

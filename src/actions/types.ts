@@ -16,6 +16,7 @@ import {
   ListenCurrentProfileAction,
   ListenSelectedProfileAction,
   ListenUserPhotos,
+  ListenUserEvents,
 } from './profile';
 
 export const TIME_VALUE = 'MMMM d, yyyy h:mm a';
@@ -42,6 +43,7 @@ export enum types {
   LISTEN_CURRENT_PROFILE_DATA,
   LISTEN_SELECTED_PROFILE_DATA,
   LISTEN_USER_PHOTOS,
+  LISTEN_USER_EVENTS,
 }
 
 export type EventAction =
@@ -60,4 +62,5 @@ export type LoadingAction =
 export type ProfileAction =
   | ListenCurrentProfileAction
   | ListenSelectedProfileAction
-  | ListenUserPhotos;
+  | ListenUserPhotos
+  | ListenUserEvents;

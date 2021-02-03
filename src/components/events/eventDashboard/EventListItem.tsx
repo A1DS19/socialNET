@@ -35,7 +35,13 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
             />
             <Item.Content>
               <Item.Header content={event.title} />
-              <Item.Description content={event.hostedBy} />
+              <Item.Description>
+                Hosteado por:
+                <Link style={{ color: '#f2711c' }} to={`/profile/${event.hostUid}`}>
+                  {' '}
+                  {event.hostedBy}
+                </Link>
+              </Item.Description>
 
               <Label
                 style={{ top: '-40px' }}

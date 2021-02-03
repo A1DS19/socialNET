@@ -1,3 +1,4 @@
+import { type } from 'os';
 import { types } from './types';
 
 export interface ListenCurrentProfileAction {
@@ -12,6 +13,11 @@ export interface ListenSelectedProfileAction {
 
 export interface ListenUserPhotos {
   type: types.LISTEN_USER_PHOTOS;
+  payload: any;
+}
+
+export interface ListenUserEvents {
+  type: types.LISTEN_USER_EVENTS;
   payload: any;
 }
 
@@ -33,5 +39,12 @@ export const listenUserPhotos = (photos: any): ListenUserPhotos => {
   return {
     type: types.LISTEN_USER_PHOTOS,
     payload: photos,
+  };
+};
+
+export const listenUserEvents = (events: any): ListenUserEvents => {
+  return {
+    type: types.LISTEN_USER_EVENTS,
+    payload: events,
   };
 };
