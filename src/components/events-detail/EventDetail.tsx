@@ -8,7 +8,7 @@ import { Redirect, RouteComponentProps } from 'react-router';
 import { useEventData } from '../hooks/useEvent';
 import { useFirestoreDoc } from '../hooks/useFirestoreDoc';
 import { listenToEventFromFirestore } from '../../firestore/firestoreService';
-import { EventData, listenEventsFS } from '../../actions/event';
+import { EventData, listenSelectedEvent } from '../../actions/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { StoreState } from '../../reducers';
 import { LoaderComponent } from '../common/Loader';
@@ -31,7 +31,7 @@ const EventDetail = ({ match }: Props) => {
 
   useFirestoreDoc({
     query: () => listenToEventFromFirestore(eventId),
-    data: (event: EventData) => dispatch(listenEventsFS([event])),
+    data: (event: EventData) => dispatch(listenSelectedEvent(event)),
     dependencies: [eventId],
   });
 
@@ -46,7 +46,7 @@ const EventDetail = ({ match }: Props) => {
       <Grid.Column width={10}>
         <EventDetailHeader event={event} isHost={isHost} isGoing={isGoing} />
         <EventDetailInfo event={event} />
-        <EventDetailChat />
+        <EventDetailChat eventId={event?.id} />
       </Grid.Column>
 
       <Grid.Column width={6}>

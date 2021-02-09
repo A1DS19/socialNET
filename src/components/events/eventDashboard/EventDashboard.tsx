@@ -1,18 +1,20 @@
-import React, { Fragment, useState } from 'react';
-import { Grid } from 'semantic-ui-react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Grid, Loader } from 'semantic-ui-react';
 import { EventList } from './EventList';
 import { useDispatch, useSelector } from 'react-redux';
 import { StoreState } from '../../../reducers/index';
 import { EventListItemLoader } from './EventListItemLoader';
 import { EventFilters } from './EventFilters';
-import { useFirestoreCollection } from '../../hooks/useFirestoreCollection';
-import { listenToEventsFromFirestore } from '../../../firestore/firestoreService';
-import { EventData, listenEventsFS } from '../../../actions/event';
+import { clearEvents, fetchEvents } from '../../../actions/event';
+import { EventsFeed } from './EventsFeed';
 
 const EventDashboard = (): JSX.Element => {
   const dispatch = useDispatch();
-  const { events } = useSelector((state: StoreState) => state.events);
+  const { events, moreEvents } = useSelector((state: StoreState) => state.events);
   const { loading } = useSelector((state: StoreState) => state.loading);
+  const { authenticated } = useSelector((state: StoreState) => state.auth);
+  const [lastDocSnapshot, setLastDocSnapshot] = useState<any>(null);
+  const [loadingInitial, setLoadingInitial] = useState(false);
   //Filtros
 
   const [predicate, setPredicate] = useState(
@@ -23,35 +25,58 @@ const EventDashboard = (): JSX.Element => {
   );
 
   const handleSetPredicate = (key: string, value: any) => {
+    dispatch(clearEvents());
+    setLastDocSnapshot(null);
     setPredicate(new Map(predicate.set(key, value)));
   };
   //Filtros end
 
-  useFirestoreCollection({
-    query: () => listenToEventsFromFirestore(predicate),
-    data: (events: EventData[]) => dispatch(listenEventsFS(events)),
-    dependencies: [dispatch, predicate],
-  });
+  useEffect(() => {
+    setLoadingInitial(true);
+    const getLastVisibleDoc = async () => {
+      const lastVisibleDoc = await dispatch(fetchEvents(predicate, 2));
+      setLastDocSnapshot(lastVisibleDoc);
+      setLoadingInitial(false);
+    };
+    getLastVisibleDoc();
+    return () => {
+      dispatch(clearEvents());
+    };
+  }, [dispatch, predicate]);
+
+  const handleFetchNextEvents = async () => {
+    const lastVisibleDoc = await dispatch(fetchEvents(predicate, 2, lastDocSnapshot));
+    setLastDocSnapshot(lastVisibleDoc);
+  };
 
   return (
     <Grid>
       <Grid.Column width={10}>
-        {loading ? (
+        {loadingInitial && (
           <Fragment>
             <EventListItemLoader />
             <EventListItemLoader />
             <EventListItemLoader />
           </Fragment>
-        ) : (
-          <EventList events={events} />
         )}
+        <EventList
+          events={events}
+          getNextEvents={handleFetchNextEvents}
+          loading={loading}
+          moreEvents={moreEvents}
+        />
       </Grid.Column>
       <Grid.Column width={6}>
+        {authenticated && <EventsFeed />}
         <EventFilters
           predicate={predicate}
           setPredicate={handleSetPredicate}
           loading={loading}
         />
+      </Grid.Column>
+      {/*Si se estan cargando mas eventos aparece esto abajo*/}
+      <Grid.Column width={10}>
+        <Loader active={loading} />
       </Grid.Column>
     </Grid>
   );

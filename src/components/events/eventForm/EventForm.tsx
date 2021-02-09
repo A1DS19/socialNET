@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 import { Button, Confirm, Header, Segment } from 'semantic-ui-react';
 import { useEventData } from '../../hooks/useEvent';
-import { EventData, listenEventsFS } from '../../../actions/event';
+import { EventData, listenSelectedEvent } from '../../../actions/event';
 import { Formik, FormikHelpers, Form, FormikProps } from 'formik';
 import { eventValidationSchema } from '../../common/validationSchemas';
 import { TextInput } from '../../common/TextInput';
@@ -43,7 +43,7 @@ const EventForm = ({ match }: Props) => {
   useFirestoreDoc({
     shouldExecute: !!eventId,
     query: () => listenToEventFromFirestore(eventId),
-    data: (event: EventData) => dispatch(listenEventsFS([event])),
+    data: (event: EventData) => dispatch(listenSelectedEvent(event)),
     dependencies: [eventId],
   });
 
@@ -172,7 +172,9 @@ const EventForm = ({ match }: Props) => {
               />
               <Button
                 disabled={props.isSubmitting}
-                onClick={() => history.push(`/events/${eventId}`)}
+                onClick={() => {
+                  selectedEvent ? history.push(`/events/${eventId}`) : history.goBack();
+                }}
                 floated='right'
                 content='Volver'
               />

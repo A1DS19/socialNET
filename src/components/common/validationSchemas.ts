@@ -33,3 +33,7 @@ export const changeUserDataValidationSchema = Yup.object({
 export const updateUserProfileDataSchema = Yup.object({
   displayName: Yup.string().required('Debe agregar su nuevo nombre de perfil'),
 });
+
+export const chatFormValidationSchema = Yup.object({
+  comment: Yup.string().required('Debe agregar un comentario'),
+});

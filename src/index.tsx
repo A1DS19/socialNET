@@ -14,7 +14,7 @@ import { App } from './components/App';
 import { verifyAuth } from './actions/auth';
 
 const composeEnhancers = composeWithDevTools({});
-const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
+export const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
 //verificar auth
 store.dispatch(verifyAuth() as any);
 

@@ -21,6 +21,32 @@ export interface ListenUserEvents {
   payload: any;
 }
 
+export interface ListenUserFollowers {
+  type: types.LISTEN_USER_FOLLOWERS;
+  payload: any;
+}
+
+export interface ListenUserFollowings {
+  type: types.LISTEN_USER_FOLLOWINGS;
+  payload: any;
+}
+
+export interface SetFollowUser {
+  type: types.SET_FOLLOW_USER;
+}
+export interface SetUnFollowUser {
+  type: types.SET_UNFOLLOW_USER;
+}
+
+export interface ClearFollowersData {
+  type: types.CLEAR_FOLLOWERS_DATA;
+}
+
+export interface ListenUserNewsFeed {
+  type: types.LISTEN_USER_NEWS_FEED;
+  payload: any;
+}
+
 export const ListenCurrentProfile = (profile: any): ListenCurrentProfileAction => {
   return {
     type: types.LISTEN_CURRENT_PROFILE_DATA,
@@ -46,5 +72,43 @@ export const listenUserEvents = (events: any): ListenUserEvents => {
   return {
     type: types.LISTEN_USER_EVENTS,
     payload: events,
+  };
+};
+
+export const listenUserFollowers = (followers: any): ListenUserFollowers => {
+  return {
+    type: types.LISTEN_USER_FOLLOWERS,
+    payload: followers,
+  };
+};
+
+export const listenUserFollowings = (followers: any): ListenUserFollowings => {
+  return {
+    type: types.LISTEN_USER_FOLLOWINGS,
+    payload: followers,
+  };
+};
+
+export const setFollowUser = (): SetFollowUser => {
+  return {
+    type: types.SET_FOLLOW_USER,
+  };
+};
+export const setUnFollowUser = (): SetUnFollowUser => {
+  return {
+    type: types.SET_UNFOLLOW_USER,
+  };
+};
+
+export const clearFollowersData = (): ClearFollowersData => {
+  return {
+    type: types.CLEAR_FOLLOWERS_DATA,
+  };
+};
+
+export const listenUserNewsFeed = (feed: any): ListenUserNewsFeed => {
+  return {
+    type: types.LISTEN_USER_NEWS_FEED,
+    payload: feed,
   };
 };

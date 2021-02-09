@@ -1,7 +1,10 @@
-import { sampleData } from './../api/sampleData';
+import {
+  fetchToEventsFromFirestore,
+  dataFromSnapshot,
+} from './../firestore/firestoreService';
 import { Dispatch } from 'redux';
 import { types } from './types';
-import { asyncActionStart, asyncActionFinish } from './loading';
+import { asyncActionStart, asyncActionFinish, asyncActionError } from './loading';
 export interface EventData {
   id?: string;
   hostUid?: string;
@@ -50,23 +53,69 @@ export interface DeleteEventAction {
 
 export interface FetchEventAction {
   type: types.FETCH_EVENTS;
-  payload?: EventData[];
+  payload?: any;
+}
+export interface ListenSelectedEvent {
+  type: types.LISTEN_SELECTED_EVENT;
+  payload: any;
 }
 
-export const listenEventsFS = (events: EventData[]) => {
-  return async (dispatch: Dispatch) => {
-    dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: events });
+export interface ClearEvents {
+  type: types.CLEAR_EVENTS;
+}
+
+export interface ListenEventsChat {
+  type: types.LISTEN_EVENTS_CHAT;
+  payload: any;
+}
+
+export interface ClearEventsChat {
+  type: types.CLEAR_EVENTS_CHAT;
+}
+
+// export const listenEventsFS = (events: EventData[]) => {
+//   return async (dispatch: Dispatch) => {
+//     dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: events });
+//   };
+// };
+
+export const clearEvents = (): ClearEvents => {
+  return {
+    type: types.CLEAR_EVENTS,
   };
 };
 
-export const fetchEvents = () => {
+export const listenSelectedEvent = (event: any) => {
   return async (dispatch: Dispatch) => {
-    const data = sampleData;
+    dispatch<ListenSelectedEvent>({ type: types.LISTEN_SELECTED_EVENT, payload: event });
+  };
+};
 
-    dispatch(asyncActionStart());
-    dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: data });
-    dispatch({ type: types.APP_LOADED });
-    dispatch(asyncActionFinish());
+export const fetchEvents = (predicate: any, limit: number, lastDocSnapshot?: any) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const snapShot = await fetchToEventsFromFirestore(
+        predicate,
+        limit,
+        lastDocSnapshot
+      ).get();
+
+      //El ultimo documento visible del query
+      const lastVisibleDoc = snapShot.docs[snapShot.docs.length - 1];
+      const moreEvents = snapShot.docs.length >= limit;
+      const events = snapShot.docs.map((doc: any) => dataFromSnapshot(doc));
+
+      dispatch(asyncActionStart());
+      dispatch<FetchEventAction>({
+        type: types.FETCH_EVENTS,
+        payload: { events, moreEvents },
+      });
+      dispatch({ type: types.APP_LOADED });
+      dispatch(asyncActionFinish());
+      return lastVisibleDoc;
+    } catch (error) {
+      dispatch(asyncActionError(error));
+    }
   };
 };
 
@@ -85,5 +134,18 @@ export const updateEvent = (event: EventData) => {
 export const deleteEvent = (eventId: string) => {
   return async (dispatch: Dispatch) => {
     dispatch<DeleteEventAction>({ type: types.DELETE_EVENT, payload: eventId });
+  };
+};
+
+export const listenToEventsChat = (comments: any) => {
+  return {
+    type: types.LISTEN_EVENTS_CHAT,
+    payload: comments,
+  };
+};
+
+export const clearEventsChat = (): ClearEventsChat => {
+  return {
+    type: types.CLEAR_EVENTS_CHAT,
   };
 };

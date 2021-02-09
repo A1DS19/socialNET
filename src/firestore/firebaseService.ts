@@ -19,6 +19,11 @@ export const deleteFromFirestoreStorage = (filename: string) => {
   return photoRef.delete();
 };
 
+export const getUserNewsFeedRef = () => {
+  const user = firebase.auth().currentUser;
+  return firebase.database().ref(`posts/${user?.uid}`).orderByKey().limitToLast(5);
+};
+
 export const signInWithEmail = (creds: AuthPayload) => {
   return firebase.auth().signInWithEmailAndPassword(creds.email, creds.password);
 };
@@ -71,5 +76,28 @@ export const registerFirebase = async ({ email, password, displayName }: AuthPay
     await setUserProfileData(user);
   } catch (error) {
     throw error;
+  }
+};
+
+export const addEventChatComment = (eventId: any, values: any) => {
+  const user = firebase.auth().currentUser;
+  const newComment = {
+    displayName: user?.displayName,
+    photoUrl: user?.photoURL,
+    uid: user?.uid,
+    text: values.comment,
+    date: Date.now(),
+    parentId: values.parentId,
+  };
+  return firebase.database().ref(`chat/${eventId}`).push(newComment);
+};
+
+export const getEventChatRef = (eventId?: any) => {
+  return firebase.database().ref(`chat/${eventId}`).orderByKey();
+};
+
+export const firebaseObjectToArray = (snapshot: any) => {
+  if (snapshot) {
+    return Object.entries(snapshot).map((e) => Object.assign({}, e[1], { id: e[0] }));
   }
 };

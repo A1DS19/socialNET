@@ -4,6 +4,10 @@ import {
   UpdateEventAction,
   DeleteEventAction,
   FetchEventAction,
+  ListenEventsChat,
+  ClearEventsChat,
+  ListenSelectedEvent,
+  ClearEvents,
 } from './event';
 import { SignInAction, SignOutAction } from './auth';
 import {
@@ -17,6 +21,12 @@ import {
   ListenSelectedProfileAction,
   ListenUserPhotos,
   ListenUserEvents,
+  ListenUserFollowers,
+  ListenUserFollowings,
+  SetFollowUser,
+  SetUnFollowUser,
+  ClearFollowersData,
+  ListenUserNewsFeed,
 } from './profile';
 
 export const TIME_VALUE = 'MMMM d, yyyy h:mm a';
@@ -27,6 +37,10 @@ export enum types {
   CREATE_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT,
+  LISTEN_EVENTS_CHAT,
+  CLEAR_EVENTS_CHAT,
+  LISTEN_SELECTED_EVENT,
+  CLEAR_EVENTS,
   //Modals
   OPEN_MODAL,
   CLOSE_MODAL,
@@ -44,15 +58,28 @@ export enum types {
   LISTEN_SELECTED_PROFILE_DATA,
   LISTEN_USER_PHOTOS,
   LISTEN_USER_EVENTS,
+  LISTEN_USER_FOLLOWERS,
+  LISTEN_USER_FOLLOWINGS,
+  SET_FOLLOW_USER,
+  SET_UNFOLLOW_USER,
+  CLEAR_FOLLOWERS_DATA,
+  LISTEN_USER_NEWS_FEED,
 }
 
 export type EventAction =
   | CreateEventAction
   | UpdateEventAction
   | DeleteEventAction
-  | FetchEventAction;
+  | FetchEventAction
+  | ListenEventsChat
+  | ListenSelectedEvent
+  | ClearEventsChat
+  | ClearEvents;
+
 export type ModalAction = OpenModalAction | CloseModalAction;
+
 export type AuthAction = SignInAction | SignOutAction;
+
 export type LoadingAction =
   | AsyncActionError
   | AsyncActionFinish
@@ -63,4 +90,10 @@ export type ProfileAction =
   | ListenCurrentProfileAction
   | ListenSelectedProfileAction
   | ListenUserPhotos
-  | ListenUserEvents;
+  | ListenUserEvents
+  | ListenUserFollowers
+  | ListenUserFollowings
+  | SetFollowUser
+  | SetUnFollowUser
+  | ClearFollowersData
+  | ListenUserNewsFeed;

@@ -4,6 +4,10 @@ export interface ProfileStateProps {
   currentUserProfile: null | any;
   selectedUserProfile: null | any;
   profileEvents: [] | any;
+  followers: [] | any;
+  followings: [] | any;
+  followingUser: boolean;
+  feed: [] | any;
   photos: [];
 }
 
@@ -11,6 +15,10 @@ const initialState: ProfileStateProps = {
   currentUserProfile: null,
   selectedUserProfile: null,
   profileEvents: [],
+  followers: [],
+  followings: [],
+  feed: [],
+  followingUser: false,
   photos: [],
 };
 
@@ -27,7 +35,18 @@ export const profileReducer = (
       return { ...state, photos: action.payload };
     case types.LISTEN_USER_EVENTS:
       return { ...state, profileEvents: action.payload };
-
+    case types.LISTEN_USER_FOLLOWERS:
+      return { ...state, followers: action.payload };
+    case types.LISTEN_USER_FOLLOWINGS:
+      return { ...state, followings: action.payload };
+    case types.SET_FOLLOW_USER:
+      return { ...state, followingUser: true };
+    case types.SET_UNFOLLOW_USER:
+      return { ...state, followingUser: false };
+    case types.CLEAR_FOLLOWERS_DATA:
+      return { ...state, followers: [], followings: [] };
+    case types.LISTEN_USER_NEWS_FEED:
+      return { ...state, feed: action.payload };
     default:
       return state;
   }

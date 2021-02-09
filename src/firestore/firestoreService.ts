@@ -32,11 +32,63 @@ export const getUserPhotos = (userUID: string) => {
 
 export const setMainPhoto = async (photo: any) => {
   const user = firebase.auth().currentUser;
+  const today = new Date();
+
+  const eventDocQuery = db
+    .collection('events')
+    .where('attendeeIds', 'array-contains', user?.uid)
+    .where('date', '>=', today);
+
+  const userFollowingRef = db
+    .collection('following')
+    .doc(user?.uid)
+    .collection('userFollowing');
+
+  const batch = db.batch();
+
+  batch.update(db.collection('users').doc(user?.uid), {
+    photoURL: photo.url,
+  });
+
   try {
-    await db.collection('users').doc(user?.uid).update({
-      photoURL: photo.url,
+    //actualiza foto de usuario en documentos de eventos
+    //al momento de cambiarla
+    const eventsQuerySnap = await eventDocQuery.get();
+    for (let i = 0; i < eventsQuerySnap.docs.length; i++) {
+      let eventDoc = eventsQuerySnap.docs[i];
+      if (eventDoc.data().hostUid === user?.uid) {
+        batch.update(eventsQuerySnap.docs[i].ref, {
+          hostPhotoURL: photo.url,
+        });
+      }
+
+      batch.update(eventsQuerySnap.docs[i].ref, {
+        attendees: eventDoc.data().attendees.filter((attendee: any) => {
+          if (attendee.id === user?.uid) {
+            attendee.photoURL = photo.url;
+          }
+          return attendee;
+        }),
+      });
+    }
+    //Actualiza foto de usuario en documento de evento
+    //en los seguidores al momento de cambiarla
+    const userFollowingSnap = await userFollowingRef.get();
+    userFollowingSnap.docs.forEach((docRef) => {
+      let followingDocRef = db
+        .collection('following')
+        .doc(docRef.id)
+        .collection('userFollowers')
+        .doc(user?.uid);
+
+      batch.update(followingDocRef, {
+        photoUrl: photo.url,
+      });
     });
-    return user?.updateProfile({
+
+    await batch.commit();
+
+    return await user?.updateProfile({
       photoURL: photo.url,
     });
   } catch (error) {
@@ -50,9 +102,17 @@ export const deletePhotoFromCollection = (photoId: string) => {
 };
 
 //get all events
-export const listenToEventsFromFirestore = (predicate: Map<string, any>) => {
+export const fetchToEventsFromFirestore = (
+  predicate: Map<string, any>,
+  limit: number,
+  lastDocSnapshot: any = null
+) => {
   const user = firebase.auth().currentUser;
-  let eventRef = db.collection('events').orderBy('date');
+  let eventRef = db
+    .collection('events')
+    .orderBy('date')
+    .startAfter(lastDocSnapshot)
+    .limit(limit);
   //Basado en el predicate decide que mostrar
   switch (predicate.get('filter')) {
     case 'isGoing':
@@ -220,4 +280,75 @@ export const getUserEventsQuery = (
         .where('date', '>=', today)
         .orderBy('date', 'asc');
   }
+};
+
+export const followUser = async (profile: any) => {
+  const user = firebase.auth().currentUser;
+  const batch = db.batch();
+
+  try {
+    batch.set(
+      db
+        .collection('following')
+        .doc(user?.uid)
+        .collection('userFollowing')
+        .doc(profile.id),
+      {
+        displayName: profile?.displayName,
+        photoURL: profile.photoURL,
+        uid: profile.id,
+      }
+    );
+
+    batch.update(db.collection('users').doc(user?.uid), {
+      //Incrementar seguidores por 1
+      followingCount: firebase.firestore.FieldValue.increment(1),
+    });
+
+    return await batch.commit();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const unFollowUser = async (profile: any) => {
+  const user = firebase.auth().currentUser;
+  const batch = db.batch();
+
+  try {
+    batch.delete(
+      db
+        .collection('following')
+        .doc(user?.uid)
+        .collection('userFollowing')
+        .doc(profile.id)
+    );
+
+    batch.update(db.collection('users').doc(user?.uid), {
+      //Decrement seguidores por 1
+      followingCount: firebase.firestore.FieldValue.increment(-1),
+    });
+
+    return await batch.commit();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getFollowersCollection = (profileId: any) => {
+  return db.collection('following').doc(profileId).collection('userFollowers');
+};
+
+export const getFollowingCollection = (profileId: any) => {
+  return db.collection('following').doc(profileId).collection('userFollowing');
+};
+
+export const getFollowingDoc = (profileId: any) => {
+  const userUid = firebase.auth().currentUser?.uid;
+  return db
+    .collection('following')
+    .doc(userUid)
+    .collection('userFollowing')
+    .doc(profileId)
+    .get();
 };
