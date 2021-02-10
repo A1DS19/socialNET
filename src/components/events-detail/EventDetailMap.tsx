@@ -24,7 +24,7 @@ const EventDetailMap: React.FC<MapProps> = ({
     <Segment attached='bottom' style={{ padding: 0 }}>
       <div style={{ height: heigth, width: width }}>
         <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyCRFsufxDhfDWgeYaDQm-i0YZOOOxcw-aU' }}
+          bootstrapURLKeys={{ key: process.env.REACT_APP_API_KEY! }}
           defaultCenter={center}
           defaultZoom={zoom}
         >

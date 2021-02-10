@@ -5,7 +5,7 @@ import 'firebase/auth';
 import 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCRFsufxDhfDWgeYaDQm-i0YZOOOxcw-aU',
+  apiKey: process.env.REACT_APP_API_KEY,
   authDomain: 'socialnet-301802.firebaseapp.com',
   projectId: 'socialnet-301802',
   storageBucket: 'socialnet-301802.appspot.com',

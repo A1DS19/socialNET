@@ -6,12 +6,16 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { TIME_VALUE } from '../../../actions/types';
 import { deleteEventFirestore } from '../../../firestore/firestoreService';
+import { useSelector } from 'react-redux';
+import { StoreState } from '../../../reducers';
 
 interface EventListItemProps {
   event: EventData;
 }
 
 const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
+  const { authenticated, currentUser } = useSelector((state: StoreState) => state.auth);
+
   const renderAttendees = event.attendees ? (
     event.attendees!.map(
       (attendee: EventAttendee): JSX.Element => {
@@ -74,12 +78,15 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
           floated='right'
           content='Ver'
         />
-        <Button
-          onClick={() => deleteEventFirestore(event.id!)}
-          color='red'
-          floated='right'
-          content='Borrar'
-        />
+
+        {authenticated && currentUser?.uid === event.hostUid && (
+          <Button
+            onClick={() => deleteEventFirestore(event.id!)}
+            color='red'
+            floated='right'
+            content='Borrar'
+          />
+        )}
       </Segment>
     </Segment.Group>
   );

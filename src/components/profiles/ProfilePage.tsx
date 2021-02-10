@@ -42,11 +42,11 @@ const ProfilePage = ({ match }: Props): JSX.Element => {
       <Grid.Column width={16}>
         <ProfileHeader
           user={selectedUserProfile}
-          isCurrentUser={currentUser?.uid === selectedUserProfile.id}
+          isCurrentUser={currentUser?.uid === selectedUserProfile?.id}
         />
         <ProfileContent
           user={selectedUserProfile}
-          isCurrentUser={currentUser?.uid === selectedUserProfile.id}
+          isCurrentUser={currentUser?.uid === selectedUserProfile?.id}
         />
       </Grid.Column>
     </Grid>

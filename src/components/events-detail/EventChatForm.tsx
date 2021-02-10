@@ -1,5 +1,5 @@
 import { Formik, FormikHelpers, FormikProps, Form } from 'formik';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { toast } from 'react-toastify';
 import { Button } from 'semantic-ui-react';
 import { addEventChatComment } from '../../firestore/firebaseService';
@@ -13,10 +13,11 @@ interface FormValues {
 interface Props {
   eventId: string | undefined;
   parentId: string | number | undefined;
+  authenticated?: boolean;
   closeForm?: () => void;
 }
 
-export const EventChatForm = ({ eventId, parentId, closeForm }: Props) => {
+export const EventChatForm = ({ eventId, parentId, closeForm, authenticated }: Props) => {
   const initialValues = {
     comment: '',
   };
@@ -40,21 +41,25 @@ export const EventChatForm = ({ eventId, parentId, closeForm }: Props) => {
     >
       {(props: FormikProps<FormValues>) => (
         <Form className='ui form'>
-          <TextArea
-            name='comment'
-            placeholder='Ingrese Comentario'
-            value={props.values.comment}
-            rows={2}
-            onChange={props.handleChange}
-            onBlur={props.handleBlur}
-          />
-          <Button
-            loading={props.isSubmitting}
-            content='Agregar Reply'
-            icon='edit'
-            primary
-            type='submit'
-          />
+          {authenticated && (
+            <Fragment>
+              <TextArea
+                name='comment'
+                placeholder='Ingrese Comentario'
+                value={props.values.comment}
+                rows={2}
+                onChange={props.handleChange}
+                onBlur={props.handleBlur}
+              />
+              <Button
+                loading={props.isSubmitting}
+                content='Agregar Reply'
+                icon='edit'
+                primary
+                type='submit'
+              />
+            </Fragment>
+          )}
         </Form>
       )}
     </Formik>

@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button, Header, Image, Item, Segment } from 'semantic-ui-react';
@@ -9,6 +10,8 @@ import {
   addUserAttendance,
   cancelUserAttendance,
 } from '../../firestore/firestoreService';
+import { StoreState } from '../../reducers';
+import { AuthModal } from '../auth/AuthModal';
 
 interface Props {
   event: EventData | undefined;
@@ -18,8 +21,15 @@ interface Props {
 
 const EventDetailHeader = ({ event, isHost, isGoing }: Props) => {
   const [loading, setLoading] = useState(false);
+  const { authenticated } = useSelector((state: StoreState) => state.auth);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleUserJoin = async () => {
+    if (!authenticated) {
+      setModalOpen(true);
+      return;
+    }
+
     setLoading(true);
     try {
       await addUserAttendance(event);
@@ -42,57 +52,63 @@ const EventDetailHeader = ({ event, isHost, isGoing }: Props) => {
   };
 
   return (
-    <Segment.Group>
-      <Segment basic attached='top' style={{ padding: '0' }}>
-        <Image
-          src={`/assets/categoryImages/${event?.category}.jpg`}
-          fluid
-          style={eventImageStyle}
-        />
+    <Fragment>
+      {modalOpen && <AuthModal setModalOpen={setModalOpen} />}
+      <Segment.Group>
+        <Segment basic attached='top' style={{ padding: '0' }}>
+          <Image
+            src={`/assets/categoryImages/${event?.category}.jpg`}
+            fluid
+            style={eventImageStyle}
+          />
 
-        <Segment basic style={eventImageTextStyle}>
-          <Item.Group>
-            <Item>
-              <Item.Content>
-                <Header size='huge' content={event?.title} style={{ color: 'white' }} />
-                <p>{format(event?.date!, TIME_VALUE)}</p>
-                <p>
-                  Hosteado por:{' '}
-                  <strong>
-                    {' '}
-                    <Link style={{ color: '#f2711c' }} to={`/profile/${event?.hostUid}`}>
-                      {event?.hostedBy}
-                    </Link>{' '}
-                  </strong>
-                </p>
-              </Item.Content>
-            </Item>
-          </Item.Group>
+          <Segment basic style={eventImageTextStyle}>
+            <Item.Group>
+              <Item>
+                <Item.Content>
+                  <Header size='huge' content={event?.title} style={{ color: 'white' }} />
+                  <p>{format(event?.date!, TIME_VALUE)}</p>
+                  <p>
+                    Hosteado por:{' '}
+                    <strong>
+                      {' '}
+                      <Link
+                        style={{ color: '#f2711c' }}
+                        to={`/profile/${event?.hostUid}`}
+                      >
+                        {event?.hostedBy}
+                      </Link>{' '}
+                    </strong>
+                  </p>
+                </Item.Content>
+              </Item>
+            </Item.Group>
+          </Segment>
         </Segment>
-      </Segment>
 
-      <Segment attached='bottom' clearing>
-        {!isHost && (
-          <Fragment>
-            {isGoing ? (
-              <Button loading={loading} onClick={handleUserCancel}>
-                Cancelar Reservacion
-              </Button>
-            ) : (
-              <Button loading={loading} color='teal' onClick={handleUserJoin}>
-                Unirme a Evento
-              </Button>
-            )}
-          </Fragment>
-        )}
+        <Segment attached='bottom' clearing>
+          {!isHost && (
+            <Fragment>
+              {isGoing ? (
+                <Button loading={loading} onClick={handleUserCancel}>
+                  Cancelar Reservacion
+                </Button>
+              ) : (
+                <Button loading={loading} color='teal' onClick={handleUserJoin}>
+                  Unirme a Evento
+                </Button>
+              )}
+            </Fragment>
+          )}
 
-        {isHost && (
-          <Button as={Link} to={`/manage/${event?.id}`} color='orange' floated='right'>
-            Manejar Evento
-          </Button>
-        )}
-      </Segment>
-    </Segment.Group>
+          {isHost && (
+            <Button as={Link} to={`/manage/${event?.id}`} color='orange' floated='right'>
+              Manejar Evento
+            </Button>
+          )}
+        </Segment>
+      </Segment.Group>
+    </Fragment>
   );
 };
 

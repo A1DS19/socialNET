@@ -12,6 +12,7 @@ import { ToastContainer } from 'react-toastify';
 import { ErrorComponent } from './common/ErrorComponent';
 import { AccountPage } from '../components/auth/AccountPage';
 import { ProfilePage } from './profiles/ProfilePage';
+import { PrivateRoute } from './PrivateRoute';
 
 const App = () => {
   const { key } = useLocation();
@@ -34,14 +35,13 @@ const App = () => {
             <Container className='main'>
               <Route exact path='/events' component={EventDashboard} />
               <Route path='/events/:id' component={EventDetail} />
-              <Route
-                exact
+              <PrivateRoute
                 path={['/createEvent', '/manage/:id']}
-                component={EventForm}
+                Component={EventForm}
                 key={key}
               />
-              <Route path='/account' component={AccountPage} />
-              <Route path='/profile/:id' component={ProfilePage} />
+              <PrivateRoute path='/account' Component={AccountPage} />
+              <PrivateRoute path='/profile/:id' Component={ProfilePage} />
               <Route path='/error' component={ErrorComponent} />
             </Container>
           </Fragment>

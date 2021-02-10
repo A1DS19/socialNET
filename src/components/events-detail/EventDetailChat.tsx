@@ -18,6 +18,7 @@ interface Props {
 const EventDetailChat = ({ eventId }: Props) => {
   const dispatch = useDispatch();
   const { comments } = useSelector((state: StoreState) => state.events);
+  const { authenticated } = useSelector((state: StoreState) => state.auth);
   const [showReplyForm, setReplyForm] = useState({ open: false, commentId: null });
   const [showReplies, setShowReplies] = useState({ open: false, childId: null });
 
@@ -46,7 +47,11 @@ const EventDetailChat = ({ eventId }: Props) => {
         color='teal'
         style={{ border: 'none' }}
       >
-        <Header>Chat Acerca de este Evento</Header>
+        <Header>
+          {authenticated
+            ? 'Chat Acerca de este Evento'
+            : 'Debe Iniciar Sesion para Comentar'}
+        </Header>
       </Segment>
 
       <Segment attached>
@@ -123,7 +128,7 @@ const EventDetailChat = ({ eventId }: Props) => {
             </Comment>
           ))}
         </Comment.Group>
-        <EventChatForm eventId={eventId} parentId={0} />
+        <EventChatForm eventId={eventId} parentId={0} authenticated={authenticated} />
       </Segment>
     </Fragment>
   );
