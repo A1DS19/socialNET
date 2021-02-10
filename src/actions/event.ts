@@ -5,6 +5,7 @@ import {
 import { Dispatch } from 'redux';
 import { types } from './types';
 import { asyncActionStart, asyncActionFinish, asyncActionError } from './loading';
+import { da } from 'date-fns/locale';
 export interface EventData {
   id?: string;
   hostUid?: string;
@@ -73,11 +74,34 @@ export interface ClearEventsChat {
   type: types.CLEAR_EVENTS_CHAT;
 }
 
-// export const listenEventsFS = (events: EventData[]) => {
-//   return async (dispatch: Dispatch) => {
-//     dispatch<FetchEventAction>({ type: types.FETCH_EVENTS, payload: events });
-//   };
-// };
+export interface Filter {
+  type: types.SET_FILTER;
+  payload: any;
+}
+
+export interface StartDate {
+  type: types.SET_START_DATE;
+  payload: Date | Date[];
+}
+
+export interface RetainState {
+  type: types.RETAIN_STATE;
+  payload: boolean;
+}
+
+export const setFilter = (value: any) => {
+  return (dispatch: Dispatch) => {
+    dispatch(clearEvents());
+    dispatch<Filter>({ type: types.SET_FILTER, payload: value });
+  };
+};
+
+export const setStartDate = (date: Date | Date[]) => {
+  return (dispatch: Dispatch) => {
+    dispatch(clearEvents());
+    dispatch<StartDate>({ type: types.SET_START_DATE, payload: date });
+  };
+};
 
 export const clearEvents = (): ClearEvents => {
   return {
@@ -91,11 +115,17 @@ export const listenSelectedEvent = (event: any) => {
   };
 };
 
-export const fetchEvents = (predicate: any, limit: number, lastDocSnapshot?: any) => {
+export const fetchEvents = (
+  filter: 'all' | 'isGoing' | 'isHosting',
+  startDate: any,
+  limit: number,
+  lastDocSnapshot?: any
+) => {
   return async (dispatch: Dispatch) => {
     try {
       const snapShot = await fetchToEventsFromFirestore(
-        predicate,
+        filter,
+        startDate,
         limit,
         lastDocSnapshot
       ).get();
@@ -108,11 +138,10 @@ export const fetchEvents = (predicate: any, limit: number, lastDocSnapshot?: any
       dispatch(asyncActionStart());
       dispatch<FetchEventAction>({
         type: types.FETCH_EVENTS,
-        payload: { events, moreEvents },
+        payload: { events, moreEvents, lastVisibleDoc },
       });
       dispatch({ type: types.APP_LOADED });
       dispatch(asyncActionFinish());
-      return lastVisibleDoc;
     } catch (error) {
       dispatch(asyncActionError(error));
     }

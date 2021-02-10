@@ -103,7 +103,8 @@ export const deletePhotoFromCollection = (photoId: string) => {
 
 //get all events
 export const fetchToEventsFromFirestore = (
-  predicate: Map<string, any>,
+  filter: string,
+  startDate: Date,
   limit: number,
   lastDocSnapshot: any = null
 ) => {
@@ -114,17 +115,15 @@ export const fetchToEventsFromFirestore = (
     .startAfter(lastDocSnapshot)
     .limit(limit);
   //Basado en el predicate decide que mostrar
-  switch (predicate.get('filter')) {
+  switch (filter) {
     case 'isGoing':
       return eventRef
         .where('attendeeIds', 'array-contains', user?.uid)
-        .where('date', '>=', predicate.get('startDate'));
+        .where('date', '>=', startDate);
     case 'isHosting':
-      return eventRef
-        .where('hostUid', '==', user?.uid)
-        .where('date', '>=', predicate.get('startDate'));
+      return eventRef.where('hostUid', '==', user?.uid).where('date', '>=', startDate);
     default:
-      return eventRef.where('date', '>=', predicate.get('startDate'));
+      return eventRef.where('date', '>=', startDate);
   }
 };
 

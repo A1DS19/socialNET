@@ -7,46 +7,35 @@ import { EventListItemLoader } from './EventListItemLoader';
 import { EventFilters } from './EventFilters';
 import { clearEvents, fetchEvents } from '../../../actions/event';
 import { EventsFeed } from './EventsFeed';
+import { types } from '../../../actions/types';
 
 const EventDashboard = (): JSX.Element => {
   const dispatch = useDispatch();
-  const { events, moreEvents } = useSelector((state: StoreState) => state.events);
+  const { events, moreEvents, filter, startDate, lastVisible, retainState } = useSelector(
+    (state: StoreState) => state.events
+  );
   const { loading } = useSelector((state: StoreState) => state.loading);
   const { authenticated } = useSelector((state: StoreState) => state.auth);
-  const [lastDocSnapshot, setLastDocSnapshot] = useState<any>(null);
   const [loadingInitial, setLoadingInitial] = useState(false);
-  //Filtros
-
-  const [predicate, setPredicate] = useState(
-    new Map<string, any>([
-      ['startDate', new Date()],
-      ['filter', 'all'],
-    ])
-  );
-
-  const handleSetPredicate = (key: string, value: any) => {
-    dispatch(clearEvents());
-    setLastDocSnapshot(null);
-    setPredicate(new Map(predicate.set(key, value)));
-  };
-  //Filtros end
 
   useEffect(() => {
+    //Si retain state es true no correr el resto
+    //ya que doc existe
+    if (retainState) return;
+
     setLoadingInitial(true);
     const getLastVisibleDoc = async () => {
-      const lastVisibleDoc = await dispatch(fetchEvents(predicate, 2));
-      setLastDocSnapshot(lastVisibleDoc);
+      dispatch(fetchEvents(filter, startDate, 2));
       setLoadingInitial(false);
     };
     getLastVisibleDoc();
     return () => {
-      dispatch(clearEvents());
+      dispatch({ type: types.RETAIN_STATE });
     };
-  }, [dispatch, predicate]);
+  }, [dispatch, filter, startDate, retainState]);
 
   const handleFetchNextEvents = async () => {
-    const lastVisibleDoc = await dispatch(fetchEvents(predicate, 2, lastDocSnapshot));
-    setLastDocSnapshot(lastVisibleDoc);
+    dispatch(fetchEvents(filter, startDate, 2, lastVisible));
   };
 
   return (
@@ -68,11 +57,7 @@ const EventDashboard = (): JSX.Element => {
       </Grid.Column>
       <Grid.Column width={6}>
         {authenticated && <EventsFeed />}
-        <EventFilters
-          predicate={predicate}
-          setPredicate={handleSetPredicate}
-          loading={loading}
-        />
+        <EventFilters loading={loading} />
       </Grid.Column>
       {/*Si se estan cargando mas eventos aparece esto abajo*/}
       <Grid.Column width={10}>

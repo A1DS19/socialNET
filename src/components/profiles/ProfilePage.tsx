@@ -26,28 +26,31 @@ const ProfilePage = ({ match }: Props): JSX.Element => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state: StoreState) => state.loading);
   const { currentUser } = useSelector((state: StoreState) => state.auth);
-  const { selectedUserProfile } = useSelector((state: StoreState) => state.profile);
+  const { selectedUserProfile, currentUserProfile } = useSelector(
+    (state: StoreState) => state.profile
+  );
+  let profile;
 
   useFirestoreDoc({
     query: () => getUserProfileData(userId),
+    shouldExecute: match.params.id !== currentUser?.uid,
     data: (profile: any) => dispatch(ListenSelectedProfile(profile)),
     dependencies: [dispatch, userId],
   });
 
-  if ((loading && !selectedUserProfile) || (!selectedUserProfile && !error))
-    return <LoaderComponent />;
+  if (match.params.id === currentUser?.uid) {
+    profile = currentUserProfile;
+  } else {
+    profile = selectedUserProfile;
+  }
+
+  if ((loading && !profile) || (!profile && !error)) return <LoaderComponent />;
 
   return (
     <Grid>
       <Grid.Column width={16}>
-        <ProfileHeader
-          user={selectedUserProfile}
-          isCurrentUser={currentUser?.uid === selectedUserProfile?.id}
-        />
-        <ProfileContent
-          user={selectedUserProfile}
-          isCurrentUser={currentUser?.uid === selectedUserProfile?.id}
-        />
+        <ProfileHeader user={profile} isCurrentUser={currentUser?.uid === profile?.id} />
+        <ProfileContent user={profile} isCurrentUser={currentUser?.uid === profile?.id} />
       </Grid.Column>
     </Grid>
   );

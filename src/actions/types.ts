@@ -1,14 +1,6 @@
 import { OpenModalAction, CloseModalAction } from '../actions/modals';
-import {
-  CreateEventAction,
-  UpdateEventAction,
-  DeleteEventAction,
-  FetchEventAction,
-  ListenEventsChat,
-  ClearEventsChat,
-  ListenSelectedEvent,
-  ClearEvents,
-} from './event';
+import * as event from './event';
+
 import { SignInAction, SignOutAction } from './auth';
 import {
   AsyncActionStart,
@@ -41,6 +33,9 @@ export enum types {
   CLEAR_EVENTS_CHAT,
   LISTEN_SELECTED_EVENT,
   CLEAR_EVENTS,
+  SET_FILTER,
+  SET_START_DATE,
+  RETAIN_STATE,
   //Modals
   OPEN_MODAL,
   CLOSE_MODAL,
@@ -67,14 +62,17 @@ export enum types {
 }
 
 export type EventAction =
-  | CreateEventAction
-  | UpdateEventAction
-  | DeleteEventAction
-  | FetchEventAction
-  | ListenEventsChat
-  | ListenSelectedEvent
-  | ClearEventsChat
-  | ClearEvents;
+  | event.CreateEventAction
+  | event.UpdateEventAction
+  | event.DeleteEventAction
+  | event.FetchEventAction
+  | event.ListenEventsChat
+  | event.ListenSelectedEvent
+  | event.ClearEventsChat
+  | event.ClearEvents
+  | event.Filter
+  | event.StartDate
+  | event.RetainState;
 
 export type ModalAction = OpenModalAction | CloseModalAction;
 
