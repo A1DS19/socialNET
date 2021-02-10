@@ -11,9 +11,14 @@ import { types } from '../../../actions/types';
 
 const EventDashboard = (): JSX.Element => {
   const dispatch = useDispatch();
-  const { events, moreEvents, filter, startDate, lastVisible, retainState } = useSelector(
-    (state: StoreState) => state.events
-  );
+  const {
+    events,
+    moreEvents,
+    filter,
+    startDate,
+    lastVisibleDoc,
+    retainState,
+  } = useSelector((state: StoreState) => state.events);
   const { loading } = useSelector((state: StoreState) => state.loading);
   const { authenticated } = useSelector((state: StoreState) => state.auth);
   const [loadingInitial, setLoadingInitial] = useState(false);
@@ -21,8 +26,9 @@ const EventDashboard = (): JSX.Element => {
   useEffect(() => {
     //Si retain state es true no correr el resto
     //ya que doc existe
-    if (retainState) return;
-
+    if (retainState) {
+      return;
+    }
     setLoadingInitial(true);
     const getLastVisibleDoc = async () => {
       dispatch(fetchEvents(filter, startDate, 2));
@@ -35,7 +41,7 @@ const EventDashboard = (): JSX.Element => {
   }, [dispatch, filter, startDate, retainState]);
 
   const handleFetchNextEvents = async () => {
-    dispatch(fetchEvents(filter, startDate, 2, lastVisible));
+    dispatch(fetchEvents(filter, startDate, 2, lastVisibleDoc));
   };
 
   return (

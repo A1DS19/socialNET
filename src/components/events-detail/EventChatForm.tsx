@@ -13,11 +13,11 @@ interface FormValues {
 interface Props {
   eventId: string | undefined;
   parentId: string | number | undefined;
-  authenticated?: boolean;
+  fromWho?: string | undefined;
   closeForm?: () => void;
 }
 
-export const EventChatForm = ({ eventId, parentId, closeForm, authenticated }: Props) => {
+export const EventChatForm = ({ eventId, parentId, closeForm, fromWho }: Props) => {
   const initialValues = {
     comment: '',
   };
@@ -41,25 +41,27 @@ export const EventChatForm = ({ eventId, parentId, closeForm, authenticated }: P
     >
       {(props: FormikProps<FormValues>) => (
         <Form className='ui form'>
-          {authenticated && (
-            <Fragment>
-              <TextArea
-                name='comment'
-                placeholder='Ingrese Comentario'
-                value={props.values.comment}
-                rows={2}
-                onChange={props.handleChange}
-                onBlur={props.handleBlur}
-              />
-              <Button
-                loading={props.isSubmitting}
-                content='Agregar Reply'
-                icon='edit'
-                primary
-                type='submit'
-              />
-            </Fragment>
-          )}
+          <Fragment>
+            <TextArea
+              name='comment'
+              placeholder={
+                parentId !== 0 ? `Responder a ${fromWho}` : 'Ingrese Comentario'
+              }
+              value={props.values.comment}
+              rows={2}
+              onChange={props.handleChange}
+              onBlur={props.handleBlur}
+            />
+            <Button
+              style={{ marginTop: 0 }}
+              size={parentId !== 0 ? 'small' : 'medium'}
+              loading={props.isSubmitting}
+              content={parentId !== 0 ? 'Responder' : 'Agregar Reply'}
+              icon='edit'
+              primary
+              type='submit'
+            />
+          </Fragment>
         </Form>
       )}
     </Formik>

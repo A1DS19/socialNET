@@ -89,6 +89,16 @@ export interface RetainState {
   payload: boolean;
 }
 
+export interface ClearSelectedEvent {
+  type: types.ClEAR_SELECTED_EVENT;
+}
+
+export const clearSelectedEvent = (): ClearSelectedEvent => {
+  return {
+    type: types.ClEAR_SELECTED_EVENT,
+  };
+};
+
 export const setFilter = (value: any) => {
   return (dispatch: Dispatch) => {
     dispatch(clearEvents());

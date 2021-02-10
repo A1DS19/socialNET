@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 import { Button, Confirm, Header, Segment } from 'semantic-ui-react';
 import { useEventData } from '../../hooks/useEvent';
-import { EventData, listenSelectedEvent } from '../../../actions/event';
+import {
+  clearSelectedEvent,
+  EventData,
+  listenSelectedEvent,
+} from '../../../actions/event';
 import { Formik, FormikHelpers, Form, FormikProps } from 'formik';
 import { eventValidationSchema } from '../../common/validationSchemas';
 import { TextInput } from '../../common/TextInput';
@@ -25,12 +29,13 @@ import {
   updateEventFirestore,
 } from '../../../firestore/firestoreService';
 import { v4 as uuidv4 } from 'uuid';
+
 export interface MatchParams {
   id: string;
 }
 interface Props extends RouteComponentProps<MatchParams> {}
 
-const EventForm = ({ match }: Props) => {
+const EventForm = ({ match, location }: Props) => {
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -40,8 +45,13 @@ const EventForm = ({ match }: Props) => {
   const history = useHistory();
   const { loading, error } = useSelector((state: StoreState) => state.loading);
 
+  useEffect(() => {
+    if (location.pathname !== '/createEvent') return;
+    dispatch(clearSelectedEvent());
+  }, [dispatch, location.pathname]);
+
   useFirestoreDoc({
-    shouldExecute: !!eventId,
+    shouldExecute: eventId !== selectedEvent?.id && location.pathname !== '/createEvent',
     query: () => listenToEventFromFirestore(eventId),
     data: (event: EventData) => dispatch(listenSelectedEvent(event)),
     dependencies: [eventId],
@@ -96,6 +106,7 @@ const EventForm = ({ match }: Props) => {
       <Header content={selectedEvent ? 'Modificar evento' : 'Crear evento'} />
 
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         validationSchema={eventValidationSchema}
         onSubmit={(values: EventData, helpers: FormikHelpers<EventData>) => {
@@ -155,6 +166,7 @@ const EventForm = ({ match }: Props) => {
               />
 
               <DateInput
+                autoComplete='off'
                 name='date'
                 placeholder='Fecha'
                 timeFormat='HH:mm'

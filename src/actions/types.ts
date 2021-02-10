@@ -36,6 +36,7 @@ export enum types {
   SET_FILTER,
   SET_START_DATE,
   RETAIN_STATE,
+  ClEAR_SELECTED_EVENT,
   //Modals
   OPEN_MODAL,
   CLOSE_MODAL,
@@ -72,7 +73,8 @@ export type EventAction =
   | event.ClearEvents
   | event.Filter
   | event.StartDate
-  | event.RetainState;
+  | event.RetainState
+  | event.ClearSelectedEvent;
 
 export type ModalAction = OpenModalAction | CloseModalAction;
 

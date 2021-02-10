@@ -23,7 +23,7 @@ const EventDetail = ({ match }: Props) => {
   const dispatch = useDispatch();
   const eventId = match.params.id;
   const event = useEventData(eventId);
-  const { currentUser } = useSelector((state: StoreState) => state.auth);
+  const { currentUser, authenticated } = useSelector((state: StoreState) => state.auth);
   const isHost = event?.hostUid === currentUser?.uid;
   //encuentra un dato en array y devuelve boolean si lo encuentra o no
   const isGoing = event?.attendees?.some((a) => a.id === currentUser?.uid);
@@ -46,7 +46,7 @@ const EventDetail = ({ match }: Props) => {
       <Grid.Column width={10}>
         <EventDetailHeader event={event} isHost={isHost} isGoing={isGoing} />
         <EventDetailInfo event={event} />
-        <EventDetailChat eventId={event?.id} />
+        {authenticated && <EventDetailChat eventId={event?.id} />}
       </Grid.Column>
 
       <Grid.Column width={6}>

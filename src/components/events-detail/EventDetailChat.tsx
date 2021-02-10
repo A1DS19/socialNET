@@ -27,7 +27,6 @@ const EventDetailChat = ({ eventId }: Props) => {
       if (!snapshot.exists()) return;
       dispatch(listenToEventsChat(firebaseObjectToArray(snapshot.val())));
     });
-    //onUnmount se limpia el state con el cleanup func de useEffect
     return () => {
       dispatch(clearEventsChat());
       getEventChatRef().off();
@@ -47,11 +46,7 @@ const EventDetailChat = ({ eventId }: Props) => {
         color='teal'
         style={{ border: 'none' }}
       >
-        <Header>
-          {authenticated
-            ? 'Chat Acerca de este Evento'
-            : 'Debe Iniciar Sesion para Comentar'}
-        </Header>
+        <Header>Chat Acerca de este Evento</Header>
       </Segment>
 
       <Segment attached>
@@ -89,15 +84,19 @@ const EventDetailChat = ({ eventId }: Props) => {
                   >
                     {'Ver Replies'}
                   </Comment.Action>
+
                   {showReplyForm.open && showReplyForm.commentId === comment.id && (
                     <EventChatForm
                       eventId={eventId}
                       parentId={comment.id}
                       closeForm={handleCloseReplyForm}
+                      fromWho={comment.displayName}
                     />
                   )}
                 </Comment.Actions>
               </Comment.Content>
+
+              {/*VER REPLIES*/}
               {showReplies.open &&
                 showReplies.childId === comment.id &&
                 comment.childNodes?.length > 0 && (
@@ -125,10 +124,11 @@ const EventDetailChat = ({ eventId }: Props) => {
                     ))}
                   </Comment.Group>
                 )}
+              {/*FINVER REPLIES*/}
             </Comment>
           ))}
         </Comment.Group>
-        <EventChatForm eventId={eventId} parentId={0} authenticated={authenticated} />
+        <EventChatForm eventId={eventId} parentId={0} />
       </Segment>
     </Fragment>
   );

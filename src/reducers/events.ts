@@ -1,12 +1,11 @@
-import { EventData, setFilter, StartDate } from './../actions/event';
+import { EventData } from './../actions/event';
 import { types, EventAction } from '../actions/types';
-import { stat } from 'fs';
 
 export interface EventsState {
   events: EventData[] | [];
   moreEvents: boolean;
   selectedEvent: EventData | undefined;
-  lastVisible: any;
+  lastVisibleDoc: any;
   filter: 'all' | 'isGoing' | 'isHosting';
   startDate: Date | Date[];
   retainState: boolean;
@@ -18,7 +17,7 @@ const initialState: EventsState = {
   events: [],
   moreEvents: true,
   comments: [],
-  lastVisible: null,
+  lastVisibleDoc: null,
   filter: 'all',
   startDate: new Date(),
   retainState: false,
@@ -36,7 +35,7 @@ export const eventsReducer = (state: any = initialState, action: EventAction) =>
         //misma pagina
         events: [...state.events, ...action.payload.events],
         moreEvents: action.payload.moreEvents,
-        lastVisible: action.payload.lastVisible,
+        lastVisibleDoc: action.payload.lastVisibleDoc,
       };
 
     case types.UPDATE_EVENT:
@@ -64,7 +63,7 @@ export const eventsReducer = (state: any = initialState, action: EventAction) =>
       return { ...state, comments: [] };
 
     case types.CLEAR_EVENTS:
-      return { ...state, events: [], moreEvents: true, lastVisible: null };
+      return { ...state, events: [], moreEvents: true, lastVisibleDoc: null };
     case types.SET_FILTER:
       return { ...state, retainState: false, moreEvents: true, filter: action.payload };
     case types.SET_START_DATE:
@@ -76,6 +75,8 @@ export const eventsReducer = (state: any = initialState, action: EventAction) =>
       };
     case types.RETAIN_STATE:
       return { ...state, retainState: true };
+    case types.ClEAR_SELECTED_EVENT:
+      return { ...state, selectedEvent: undefined };
 
     default:
       return state;

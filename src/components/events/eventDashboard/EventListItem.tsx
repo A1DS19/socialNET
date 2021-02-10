@@ -1,13 +1,14 @@
 import React from 'react';
 import { Button, Icon, Item, Label, List, Segment } from 'semantic-ui-react';
 import { EventListAttendee } from './EventListAttendee';
-import { EventData, EventAttendee } from '../../../actions/event';
+import { EventData, EventAttendee, deleteEvent } from '../../../actions/event';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { TIME_VALUE } from '../../../actions/types';
 import { deleteEventFirestore } from '../../../firestore/firestoreService';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StoreState } from '../../../reducers';
+import { toast } from 'react-toastify';
 
 interface EventListItemProps {
   event: EventData;
@@ -15,7 +16,7 @@ interface EventListItemProps {
 
 const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
   const { authenticated, currentUser } = useSelector((state: StoreState) => state.auth);
-
+  const dispatch = useDispatch();
   const renderAttendees = event.attendees ? (
     event.attendees!.map(
       (attendee: EventAttendee): JSX.Element => {
@@ -25,6 +26,15 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
   ) : (
     <List.Item>No hay participantes</List.Item>
   );
+
+  const handleDelete = (eventId: any) => {
+    try {
+      deleteEventFirestore(eventId);
+      dispatch(deleteEvent(eventId));
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <Segment.Group>
@@ -81,7 +91,7 @@ const EventListItem = ({ event }: EventListItemProps): JSX.Element => {
 
         {authenticated && currentUser?.uid === event.hostUid && (
           <Button
-            onClick={() => deleteEventFirestore(event.id!)}
+            onClick={() => handleDelete(event.id)}
             color='red'
             floated='right'
             content='Borrar'
